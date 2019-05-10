@@ -17,3 +17,9 @@
 const Route = use('Route')
 
 Route.on('/').render('welcome')
+Route.on('/new-passport').render('index')
+
+
+Route.post('/login', 'UserController.login')
+Route.post('/signup', 'UserController.signup')
+Route.get('/autologin', 'UserController.autologin')
