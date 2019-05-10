@@ -23,3 +23,5 @@ Route.on('/new-passport').render('index')
 Route.post('/login', 'UserController.login')
 Route.post('/signup', 'UserController.signup')
 Route.get('/autologin', 'UserController.autologin')
+Route.post('/new', 'UserController.newPassport')
+
