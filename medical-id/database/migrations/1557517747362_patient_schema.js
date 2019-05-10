@@ -9,6 +9,7 @@ class PatientSchema extends Schema {
       table.increments()
       table.integer('doctor_id').unsigned().references('id').inTable('users').notNullable()
       table.string('name').notNullable()
+      table.string('gender').notNullable()
       table.string('dob').notNullable()
       table.timestamps()
     })
