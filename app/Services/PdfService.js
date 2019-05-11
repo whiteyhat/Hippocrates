@@ -13,15 +13,15 @@ class PdfService {
           autoFirstPage: false
         }),
         table = new PdfTable(pdf, {
-          bottomMargin: 30
+          topMargin: 100
         });
 
-      pdf.pipe(fs.createWriteStream('passport.pdf'))
+      pdf.pipe(fs.createWriteStream('1.pdf'))
 
       table
         // add some plugins (here, a 'fit-to-width' for a column)
         .addPlugin(new(require('voilab-pdf-table/plugins/fitcolumn'))({
-          column: 'title'
+          column: 'value'
         }))
         // set defaults to your columns
         .setColumnsDefaults({
@@ -32,12 +32,12 @@ class PdfService {
         .addColumns([{
             id: 'title',
             header: 'PATIENT',
-            align: 'left'
+            align: 'left',
+            width: 100
           },
           {
             id: 'value',
             header: 'VALUE',
-            width: 100
           }
         ])
         // add events (here, we draw headers on each new page)
@@ -48,11 +48,48 @@ class PdfService {
       // if no page already exists in your PDF, do not forget to add one
       pdf.addPage()
 
+      const blocknumber = "30513" 
+      const date = "2019-5-11 18:18"
+      Logger.info(date)
+      const tx = "0x7914e2ac58a0adc911fe4ecdfbd8a92b3c27bc6c407544e4dee8092b6e0a008e"
+      const filehash = "234567876543234567"
+      const validation = "12"
+      const link = "https://rinkeby.etherscan.io/tx/" + tx
+      
+      pdf.font('public/fonts/palatino.ttf', 25)
+        .text('Hippocrates Passport Certification',{
+          align: 'center',
+        }, 100, 50)
+        .font('public/fonts/palatino.ttf', 13)
+        .moveDown()
+        .text("Hippocrates certifies that the atached file identified with hash: " + filehash  + " saved in block number " + blocknumber + " of the Ethereum public ledger with the transaction hash: ", {
+          width: 412,
+          align: 'justify',
+          indent: 30,
+          height: 300,
+          ellipsis: true
+        })
+        .fillColor('blue')
+        .font('public/fonts/palatino.ttf', 13)
+        .text(tx,{
+          link,
+          underline: true
+        })
+        .moveDown()
+        .fillColor('black')
+        .font('public/fonts/palatino.ttf', 13)
+        .text( "At this moment the transaction was validated as success by " + validation + " blocks. And for the record, Hippocrates issues this Certificate with date " + date + ".",{
+          width: 412,
+          align: 'justify',
+          indent: 30,
+          height: 300,
+          ellipsis: true
+        });
 
-      // Embed a font, set the font size, and render some text
-      pdf.font('public/fonts/palatino.ttf')
+      //}
 
-      // pdf.text("HIPPOCRATES", {align: 'center'})
+      pdf.fontSize(11).font('public/fonts/palatino.ttf', 13).moveDown()
+
 
       // draw content, by passing data to the addBody method
       table.addBody([{
@@ -189,7 +226,21 @@ class PdfService {
         }
       ]);
 
+      let file = null
+      let buffers = []
+      pdf.on('data', buffers.push.bind(buffers))
+      pdf.on('end', () => {
+
+        file = Buffer.concat(buffers)
+
+        // ... now send pdfData as attachment ...
+
+      });
+
       pdf.end()
+      Logger.info('PDF GENERATED')
+
+      return file
     } catch (error) {
       Logger.error(error)
     }
