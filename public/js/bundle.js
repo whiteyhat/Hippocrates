@@ -36523,8 +36523,7 @@
      */
     function initCloneObject(object) {
       return (typeof object.constructor == 'function' && !isPrototype(object)) ?
-        baseCreate(getPrototype(object)) :
-        {};
+        baseCreate(getPrototype(object)) : {};
     }
 
     module.exports = initCloneObject;
@@ -59146,7 +59145,8 @@
   496: [function (require, module, exports) {
     var Web3 = require('web3');
     var patient, report, allergy, immunisation, social, medication = null
-    let provider = null;
+    var contract = null;
+    var accounts = null;
 
     const address = '0xb84b12e953f5bcf01b05f926728e855f2d4a67a9'
     //use the ABI from your contract
@@ -59176,27 +59176,8 @@
       }
     ]
 
-    function formatDate(date) {
-      var monthNames = [
-        "January", "February", "March",
-        "April", "May", "June", "July",
-        "August", "September", "October",
-        "November", "December"
-      ];
     
-      var hours = date.getHours();
-      var minutes = date.getMinutes();
-      var seconds = date.getSeconds();
-
-      var day = date.getDate();
-      var monthIndex = date.getMonth();
-      var year = date.getFullYear();
-    
-      return day + ' ' + monthNames[monthIndex] + ' ' + year + ' at ' + hours + ':' + minutes + ':' + seconds;
-    }
-
     $(document).ready(function () {
-
 
       //Initialize tooltips
       $('.nav-tabs > li a[title]').tooltip();
@@ -59236,62 +59217,14 @@
 
 
     $("#save1").on('click', async function () {
-      // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-
       if (typeof web3 !== 'undefined') {
         web3 = new Web3(web3.currentProvider);
-        var contract = new web3.eth.Contract(abi, address);
-        const accounts = await web3.eth.getAccounts();
-
-         contract.methods.sendHash("asx").send({
-          from: accounts[0]
-        }, async (error, transactionHash) => {
-
-          var interval = setInterval(async function(){
-            await web3.eth.getTransactionReceipt(transactionHash, (err, txReceipt) => {
-
-              if (txReceipt) {
-                clearInterval(interval);
-                const confirmations = web3.eth.blockNumber - txReceipt.blockNumber;
-                toast('success', 'Transaction Confirmed');
-                var request = $.ajax({
-                  url: "/block-data",
-                  data: {
-                    blockHash: txReceipt.blockHash,
-                    blockNumber: txReceipt.blockNumber,
-                    blockHash: txReceipt.blockHash,
-                    timestamp: formatDate(new Date()),
-                    confirmations
-                  },
-                  type: 'post',
-                  headers: {
-                    'x-csrf-token': $('[name=_csrf]').val()
-                  },
-                  dataType: 'json'
-                })
-          
-                request.done(function (data) {
-                  toast('success', data);
-                });
-                request.fail(function (jqXHR, textStatus) {
-                  console.log(textStatus, jqXHR);
-                });
-          
-              }
-            }); //await for getTransactionReceipt
-          }, 4000);
-
-          
-        });
-
-       
-
+        contract = new web3.eth.Contract(abi, address);
+        accounts = await web3.eth.getAccounts();
       } else {
         // set the provider you want from Web3.providers
         web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
       }
-
-
 
       let gender = null;
       if ($('#male').is(':checked')) {
@@ -59444,7 +59377,10 @@
 
     })
 
-    $("#save4").on('click', async function () {
+    $("#save4").on('click', function () {
+      toast('info', 'Encrypting and uploading patient passport to IPFS');
+      console.log("Receiving hash...")
+
       var request = $.ajax({
         url: "/new",
         data: {
@@ -59463,10 +59399,73 @@
       })
 
       request.done(function (data) {
-        toast('success', data);
+
+        contract.methods.sendHash(data.hash).send({
+          from: accounts[0]
+        }, async (error, transactionHash) => {
+
+          if (error) {
+            toast('error', 'IPFS Passport failing while uploading to the Ethereum Public Ledger');
+          } else {
+
+
+            //setTimeout(function(){
+            toast('info', 'Uploading IPFS Passport to the Ethereum Public Ledger');
+            //}, 5000);
+
+            setTimeout(function () {
+              toast('warning', 'Waiting for the transaction to be confirmed. Please, wait...');
+            }, 5000);
+            var interval = setInterval(async function () {
+              await web3.eth.getTransactionReceipt(transactionHash, (err, txReceipt) => {
+
+                if (txReceipt) {
+                  clearInterval(interval);
+
+                  toast('success', "Patient Passport intergity secured in hash: " + transactionHash + ". <br><a href='https://rinkeby.etherscan.io/tx/" + transactionHash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>")
+                  var request = $.ajax({
+                    url: "/block-data",
+                    data: {
+                      patient,
+                      report,
+                      allergy,
+                      immunisation,
+                      social,
+                      medication,
+                      blockHash: txReceipt.blockHash,
+                      blockNumber: txReceipt.blockNumber,
+                      txid: transactionHash,
+                      filehash: data.hash
+                    },
+                    type: 'post',
+                    headers: {
+                      'x-csrf-token': $('[name=_csrf]').val()
+                    },
+                    dataType: 'json'
+                  })
+
+                  request.done(function (data) {
+                    setTimeout(function () {
+                      toast('warning', 'Waiting to download a blockchain certification of the patient passport');
+                    }, 3000);
+                    setTimeout(function () {
+                      window.location.replace("/temp/"+data.path)
+                    }, 4000);
+                  });
+                  request.fail(function (jqXHR, textStatus) {
+                    console.log(textStatus, jqXHR);
+                  });
+
+                }
+              }); //await for getTransactionReceipt
+            }, 4000);
+          }
+        });
+        console.log(data);
+
       });
       request.fail(function (jqXHR, textStatus) {
-        toast('error', textStatus + jqXHR);
+        console.log(textStatus, jqXHR);
       });
 
     })
