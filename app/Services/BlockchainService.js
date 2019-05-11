@@ -1,4 +1,4 @@
-const web3 = require('web3')
+const Web3 = require('web3')
 //access our local copy to contract deployed on rinkeby testnet
 //use your own contract address
 const address = '0xb84b12e953f5bcf01b05f926728e855f2d4a67a9'
@@ -33,36 +33,40 @@ const IPFS = require('ipfs-api')
 const ipfs = new IPFS({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
 const Logger = use('Logger')
 
+
 //run with local daemon
 // const ipfsApi = require('ipfs-api');
 // const ipfs = new ipfsApi('localhost', '5001', {protocol: 'http'});
 class BlockchainService {
 
-  async uploadToBlockchain() {
-    const accounts = await web3.eth.getAccounts();
-    Logger.ino('Sending from Metamask account: ' + accounts[0]);
+  async uploadToBlockchain(data) {
+    const accounts = await web3.eth.getAccounts()
+    const web3 = new Web3(window.web3.currentProvider);
+    const contract = web3.eth.contract(abi, address)
+    let hash = null
+    let txid = null
+    Logger.info('Sending from Metamask account: ' + accounts[0])
 
 
     //save document to IPFS,return its hash#, and set hash# to state
     //https://github.com/ipfs/interface-ipfs-core/blob/master/SPEC/FILES.md#add 
-    await ipfs.add(this.state.buffer, (err, ipfsHash) => {
-      console.log(err, ipfsHash);
+    await ipfs.add(data, (err, ipfsHash) => {
+      Logger.warning(err, ipfsHash)
       //setState by setting ipfsHash to ipfsHash[0].hash 
-      this.setState({
-        ipfsHash: ipfsHash[0].hash
-      });
 
+      hash = ipfsHash[0].hash
+
+      Logger.info(hash)
+      
       // call Ethereum contract method "sendHash" and .send IPFS hash to etheruem contract 
       //return the transaction hash from the ethereum contract
       //see, this https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html#methods-mymethod-send
 
-      storehash.methods.sendHash(this.state.ipfsHash).send({
+      contract.methods.sendHash(hash).send({
         from: accounts[0]
       }, (error, transactionHash) => {
-        Logger.info(transactionHash);
-        this.setState({
-          transactionHash
-        });
+        txid = transactionHash
+        Logger.info(txid)
       }); //storehash 
     }) //await ipfs.add 
   }
