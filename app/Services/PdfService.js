@@ -3,12 +3,13 @@ const fs = require("fs")
 const Logger = use('Logger')
 const PdfDocument = require('pdfkit')
 const PdfTable = require('voilab-pdf-table')
+const web3 = require('web3')
 
 class PdfService {
 
   generatePDF(data, name) {
 
-    let filename = name+".pdf"
+    let filename = "public/temp/" + name + ".pdf"
     try {
       // create a PDF from PDFKit, and a table from PDFTable
       var pdf = new PdfDocument({
@@ -50,20 +51,17 @@ class PdfService {
       // if no page already exists in your PDF, do not forget to add one
       pdf.addPage()
 
-      const blocknumber = "30513" 
-      const date = "2019-5-11 18:18"
-      const tx = "0x7914e2ac58a0adc911fe4ecdfbd8a92b3c27bc6c407544e4dee8092b6e0a008e"
-      const filehash = "234567876543234567"
-      const validation = "12"
-      const link = "https://rinkeby.etherscan.io/tx/" + tx
-      
-      pdf.font('public/fonts/palatino.ttf', 25)
+      if (data.blockchain) {
+        const validation = 6
+        const link = "https://rinkeby.etherscan.io/tx/" + data.blockchain.txid
+
+        pdf.font('public/fonts/palatino.ttf', 25)
         .text('Hippocrates Passport Certification',{
           align: 'center',
         }, 100, 50)
         .font('public/fonts/palatino.ttf', 13)
         .moveDown()
-        .text("Hippocrates certifies that the atached file identified with hash: " + filehash  + " saved in block number " + blocknumber + " of the Ethereum public ledger with the transaction hash: ", {
+        .text("Hippocrates certifies that the atached file identified with hash: " + data.blockchain.filehash  + " saved in block number " + data.blockchain.blockNumber + " of the Ethereum Public Ledger with the following transaction hash: ", {
           width: 412,
           align: 'justify',
           indent: 30,
@@ -72,22 +70,21 @@ class PdfService {
         })
         .fillColor('blue')
         .font('public/fonts/palatino.ttf', 13)
-        .text(tx,{
+        .text(data.blockchain.txid,{
           link,
           underline: true
         })
         .moveDown()
         .fillColor('black')
         .font('public/fonts/palatino.ttf', 13)
-        .text( "At this moment the transaction was validated as success by " + validation + " blocks. And for the record, Hippocrates issues this Certificate with date " + date + ".",{
+        .text( "At this moment the transaction was validated as success by " + validation + " blocks. And for the record, Hippocrates issues this Certificate with date " + this.formatDate(new Date) + ".",{
           width: 412,
           align: 'justify',
           indent: 30,
           height: 300,
           ellipsis: true
         });
-
-      //}
+      }
 
       pdf.fontSize(11).font('public/fonts/palatino.ttf', 13).moveDown()
 
@@ -229,21 +226,36 @@ class PdfService {
 
       pdf.end()
       Logger.info('PDF GENERATED')
+
+      if (data.blockchain) {
+        return  name+".pdf"
+      }
+      
       return  filename
     } catch (error) {
       Logger.error(error)
     }
   }
 
-  // async getSize() {
-  //     try {
-  //         const total = await Database.raw('select count(is_pro) as size from satodb.users where is_pro = 1')
-  //         return total[0][0].size
-  //     }
-  //     catch (error) {
-  //         Logger.error(error);
-  //     }
-  // }
+   formatDate(date) {
+    var monthNames = [
+      "January", "February", "March",
+      "April", "May", "June", "July",
+      "August", "September", "October",
+      "November", "December"
+    ];
+
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = date.getSeconds();
+
+    var day = date.getDate();
+    var monthIndex = date.getMonth();
+    var year = date.getFullYear();
+
+    return day + 'of ' + monthNames[monthIndex] + ' of ' + year + ' at ' + hours + ':' + minutes + ':' + seconds;
+  }
+
 
 
 }
