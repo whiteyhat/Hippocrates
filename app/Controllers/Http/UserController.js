@@ -67,25 +67,38 @@ class UserController {
 
   }
 
-  async fetchBlockchainData({request}){
+  async fetchBlockchainData({request, response}){
     try {
-      const { blockHash,blockNumber,timestamp,confirmations} = request.all()
+      const { txid,filehash,blockNumber,timestamp, patient,report,allergy,immunisation,social,medication} = request.all()
 
-      Logger.info(blockHash)
-      Logger.info(blockNumber)
-      Logger.info(timestamp)
-      Logger.info(confirmations)
+      const data = {
+        patient,
+        report,
+        allergy,
+        immunisation,
+        social,
+        medication,
+        blockchain : {
+          filehash,
+          blockNumber,
+          timestamp,
+          txid,
+          filehash
+        }
+      }
+
+      const path = await PdfService.generatePDF(data, Date.now().toString())
+      Logger.info(path)
+
+      response.send({path})
+      
 
     }catch(error){
       Logger.error(error)
     }
   }
 
-  async newPassport({
-    auth,
-    request,
-    response
-  }) {
+  async newPassport({auth,request,response}) {
     try {
       const {
         patient,
@@ -96,57 +109,57 @@ class UserController {
         medication
       } = request.all()
 
-      // const patien = await Patient.create({
-      //   doctor_id: await auth.user.id,
-      //   name: patient.name,
-      //   dob: patient.dob,
-      //   gender: patient.gender
-      // })
+      const patien = await Patient.create({
+        doctor_id: await auth.user.id,
+        name: patient.name,
+        dob: patient.dob,
+        gender: patient.gender
+      })
 
-      // const repor = await Report.create({
-      //   patient_id: patien.id,
-      //   condition: report.condition,
-      //   year: report.year,
-      //   notes: report.notes
-      // })
+      const repor = await Report.create({
+        patient_id: patien.id,
+        condition: report.condition,
+        year: report.year,
+        notes: report.notes
+      })
 
-      // const allerg = await Allergy.create({
-      //   patient_id: patien.id,
-      //   allergy: allergy.name,
-      //   risk: allergy.risk,
-      //   notes: allergy.notes
-      // })
+      const allerg = await Allergy.create({
+        patient_id: patien.id,
+        allergy: allergy.name,
+        risk: allergy.risk,
+        notes: allergy.notes
+      })
 
-      // const immunisatio = await Immunisation.create({
-      //   patient_id: patien.id,
-      //   name: immunisation.name,
-      //   date: immunisation.year,
-      // })
+      const immunisatio = await Immunisation.create({
+        patient_id: patien.id,
+        name: immunisation.name,
+        date: immunisation.year,
+      })
 
-      // const socia = await Social.create({
-      //   patient_id: patien.id,
-      //   mobility: social.mobility,
-      //   eating: social.eating,
-      //   dressing: social.dressing,
-      //   toileting: social.toileting,
-      //   washing: social.washing,
-      //   functions: social.activity,
-      //   behaviour: social.behaviour
-      // })
+      const socia = await Social.create({
+        patient_id: patien.id,
+        mobility: social.mobility,
+        eating: social.eating,
+        dressing: social.dressing,
+        toileting: social.toileting,
+        washing: social.washing,
+        functions: social.activity,
+        behaviour: social.behaviour
+      })
 
-      // const medicatio = await Medication.create({
-      //   patient_id: patien.id,
-      //   medication: medication.name,
-      //   dose: medication.dose,
-      //   monday: medication.monday,
-      //   tuesday: medication.tuesday,
-      //   wednesday: medication.wednesday,
-      //   thursday: medication.thursday,
-      //   friday: medication.friday,
-      //   saturday: medication.saturday,
-      //   sunday: medication.sunday,
-      //   description: medication.plan
-      // })
+      const medicatio = await Medication.create({
+        patient_id: patien.id,
+        medication: medication.name,
+        dose: medication.dose,
+        monday: medication.monday,
+        tuesday: medication.tuesday,
+        wednesday: medication.wednesday,
+        thursday: medication.thursday,
+        friday: medication.friday,
+        saturday: medication.saturday,
+        sunday: medication.sunday,
+        description: medication.plan
+      })
 
       const data = {
         patient,
@@ -156,11 +169,17 @@ class UserController {
         social,
         medication
       }
+
+      // response.send({data: "wtf?"})
       const file = await PdfService.generatePDF(data, Date.now().toString())
       
-      const hash = await BlockchainService.uploadToIPFS(file)
+      await BlockchainService.uploadToIPFS(file).then(function(nice) {
+        Logger.info("IPFS HASH: " + nice)
+        response.send({hash:nice})
+      }).catch(function(error) {
+        console.log("Failed!", error);
+      })
 
-      Logger.info(hash)
     } catch (error) {
       Logger.error(error)
     }
