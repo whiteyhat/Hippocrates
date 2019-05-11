@@ -18,8 +18,9 @@ const Route = use('Route')
 
 Route.on('/').render('welcome')
 Route.on('/new-passport').render('index')
+Route.get('/p', 'UserController.pdf')
 
-
+Route.post('/block-data', 'UserController.fetchBlockchainData')
 Route.post('/login', 'UserController.login')
 Route.post('/signup', 'UserController.signup')
 Route.get('/autologin', 'UserController.autologin')
