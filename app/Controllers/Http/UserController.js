@@ -156,7 +156,11 @@ class UserController {
         social,
         medication
       }
-      await PdfService.generatePDF(data)
+      const file = await PdfService.generatePDF(data, Date.now().toString())
+      
+      const hash = await BlockchainService.uploadToIPFS(file)
+
+      Logger.info(hash)
     } catch (error) {
       Logger.error(error)
     }
