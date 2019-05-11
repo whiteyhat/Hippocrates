@@ -6,7 +6,9 @@ const PdfTable = require('voilab-pdf-table')
 
 class PdfService {
 
-  generatePDF(data) {
+  generatePDF(data, name) {
+
+    let filename = name+".pdf"
     try {
       // create a PDF from PDFKit, and a table from PDFTable
       var pdf = new PdfDocument({
@@ -16,7 +18,7 @@ class PdfService {
           topMargin: 100
         });
 
-      pdf.pipe(fs.createWriteStream('1.pdf'))
+      pdf.pipe(fs.createWriteStream(filename))
 
       table
         // add some plugins (here, a 'fit-to-width' for a column)
@@ -50,7 +52,6 @@ class PdfService {
 
       const blocknumber = "30513" 
       const date = "2019-5-11 18:18"
-      Logger.info(date)
       const tx = "0x7914e2ac58a0adc911fe4ecdfbd8a92b3c27bc6c407544e4dee8092b6e0a008e"
       const filehash = "234567876543234567"
       const validation = "12"
@@ -226,21 +227,9 @@ class PdfService {
         }
       ]);
 
-      let file = null
-      let buffers = []
-      pdf.on('data', buffers.push.bind(buffers))
-      pdf.on('end', () => {
-
-        file = Buffer.concat(buffers)
-
-        // ... now send pdfData as attachment ...
-
-      });
-
       pdf.end()
       Logger.info('PDF GENERATED')
-
-      return file
+      return  filename
     } catch (error) {
       Logger.error(error)
     }
