@@ -27,7 +27,11 @@
     "@adonisjs/session": "^1.0.27",
     "@adonisjs/shield": "^1.0.8",
     "Logger": "0.0.0",
-    "mysql": "^2.17.1"
+    "ipfs-api": "^26.1.2",
+    "mysql": "^2.17.1",
+    "pdfkit": "^0.9.1",
+    "voilab-pdf-table": "^0.4.1",
+    "web3": "^1.0.0-beta.55"
   },
   "devDependencies": {},
   "autoload": {
