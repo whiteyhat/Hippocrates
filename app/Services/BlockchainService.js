@@ -12,24 +12,19 @@ const fs = require("fs")
 class BlockchainService {
 
   async uploadToIPFS(filename) {
-  
     let file = fs.readFileSync(filename);
 
     let buffer = new Buffer.from(file);
     Logger.info("Uploading file to IPFS")
     //save document to IPFS,return its hash
     //https://github.com/ipfs/interface-ipfs-core/blob/master/SPEC/FILES.md#add 
-    await ipfs.add(buffer, (err, ipfsHash) => {
-      Logger.warning(err, ipfsHash)
-      var interval = setInterval( function(){
+    
+    return new Promise(resolve => {
+      ipfs.add(buffer, (err, ipfsHash) => {
+        resolve(ipfsHash[0].hash)
+      }) //await ipfs.add 
+    });
 
-          if (ipfsHash) {
-            clearInterval(interval)
-            return ipfsHash[0].hash
-          }
-      }, 1000);
-
-    }) //await ipfs.add 
   }
 
 
