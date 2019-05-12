@@ -69,18 +69,18 @@
   $(document).ready(function () {
 
   // create a request to the backend for autologin
-  // var request = $.ajax({
-  //   url: '/autologin',
-  //   type: 'get',
-  //   headers: {
-  //     'x-csrf-token': $('[name=_csrf]').val()
-  //   },
-  //   dataType: 'json'
-  // });
+  var request = $.ajax({
+    url: '/autologin',
+    type: 'get',
+    headers: {
+      'x-csrf-token': $('[name=_csrf]').val()
+    },
+    dataType: 'json'
+  });
 
-  // request.fail(function (jqXHR, textStatus) {
-  //   console.log(textStatus, jqXHR);
-  // });
+  request.fail(function (jqXHR, textStatus) {
+    console.log(textStatus, jqXHR);
+  });
 });
 </script>
 </body>

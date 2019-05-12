@@ -3,7 +3,6 @@ const fs = require("fs")
 const Logger = use('Logger')
 const PdfDocument = require('pdfkit')
 const PdfTable = require('voilab-pdf-table')
-const web3 = require('web3')
 
 class PdfService {
 
@@ -13,12 +12,12 @@ class PdfService {
     try {
       // create a PDF from PDFKit, and a table from PDFTable
       var pdf = new PdfDocument({
-          autoFirstPage: false
+          autoFirstPage: false,
+          userPassword: "pass"
         }),
         table = new PdfTable(pdf, {
           topMargin: 100
         });
-
       pdf.pipe(fs.createWriteStream(filename))
 
       table
@@ -48,37 +47,60 @@ class PdfService {
           tb.addHeader()
         });
 
+
       // if no page already exists in your PDF, do not forget to add one
       pdf.addPage()
 
       if (data.blockchain) {
         const validation = 6
         const link = "https://rinkeby.etherscan.io/tx/" + data.blockchain.txid
+        const ipfsLink = "https://ipfs.io/ipfs/" + data.blockchain.filehash
 
-        pdf.font('public/fonts/palatino.ttf', 25)
+        pdf
+        .image('public/img/logo.png', 250, 60, {
+          align: 'center',
+          scale: 0.25
+        })
+        .moveDown()
+        .font('public/fonts/roboto.ttf', 25)
         .text('Hippocrates Passport Certification',{
           align: 'center',
-        }, 100, 50)
-        .font('public/fonts/palatino.ttf', 13)
+        }, 170, 50)
+        .font('public/fonts/roboto.ttf', 13)
         .moveDown()
-        .text("Hippocrates certifies that the atached file identified with hash: " + data.blockchain.filehash  + " saved in block number " + data.blockchain.blockNumber + " of the Ethereum Public Ledger with the following transaction hash: ", {
-          width: 412,
+        .text("Hippocrates certifies that the atached file identified with hash: ", {
+          width: 470,
           align: 'justify',
           indent: 30,
           height: 300,
           ellipsis: true
         })
         .fillColor('blue')
-        .font('public/fonts/palatino.ttf', 13)
+        .font('public/fonts/roboto.ttf', 13)
+        .text(data.blockchain.filehash,{
+          link: ipfsLink,
+          underline: true
+        })
+        .fillColor('black')
+        .font('public/fonts/roboto.ttf', 13)
+        .text("saved in block number " + data.blockchain.blockNumber + " of the Ethereum Public Ledger with the following transaction hash: ", {
+          width: 470,
+          align: 'justify',
+          indent: 30,
+          height: 300,
+          ellipsis: true
+        })
+        .fillColor('blue')
+        .font('public/fonts/roboto.ttf', 13)
         .text(data.blockchain.txid,{
           link,
           underline: true
         })
         .moveDown()
         .fillColor('black')
-        .font('public/fonts/palatino.ttf', 13)
-        .text( "At this moment the transaction was validated as success by " + validation + " blocks. And for the record, Hippocrates issues this Certificate with date " + this.formatDate(new Date) + ".",{
-          width: 412,
+        .font('public/fonts/roboto.ttf', 13)
+        .text( "At this moment the transaction was validated as success by " + validation + " blocks. And for the record, Hippocrates issues this certificate with date " + this.formatDate(new Date) + ".",{
+          width: 470,
           align: 'justify',
           indent: 30,
           height: 300,
@@ -86,7 +108,7 @@ class PdfService {
         });
       }
 
-      pdf.fontSize(11).font('public/fonts/palatino.ttf', 13).moveDown()
+      pdf.fontSize(11).font('public/fonts/roboto.ttf', 13).moveDown()
 
 
       // draw content, by passing data to the addBody method
@@ -253,7 +275,7 @@ class PdfService {
     var monthIndex = date.getMonth();
     var year = date.getFullYear();
 
-    return day + 'of ' + monthNames[monthIndex] + ' of ' + year + ' at ' + hours + ':' + minutes + ':' + seconds;
+    return day + ' of ' + monthNames[monthIndex] + ' of ' + year + ' at ' + hours + ':' + minutes + ':' + seconds;
   }
 
 

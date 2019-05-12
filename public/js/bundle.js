@@ -59408,10 +59408,11 @@
             toast('error', 'IPFS Passport failing while uploading to the Ethereum Public Ledger');
           } else {
 
+            toast('info', "Passport encrypted and uploaded to IPFS with the following hash: " + transactionHash + ". <br><a href='https://ipfs.io/ipfs/" + data.hash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>");
 
-            //setTimeout(function(){
+            setTimeout(function(){
             toast('info', 'Uploading IPFS Passport to the Ethereum Public Ledger');
-            //}, 5000);
+            }, 5000);
 
             setTimeout(function () {
               toast('warning', 'Waiting for the transaction to be confirmed. Please, wait...');
@@ -59447,10 +59448,10 @@
                   request.done(function (data) {
                     setTimeout(function () {
                       toast('warning', 'Waiting to download a blockchain certification of the patient passport');
-                    }, 3000);
+                    }, 7000);
                     setTimeout(function () {
                       window.location.replace("/temp/"+data.path)
-                    }, 4000);
+                    }, 8000);
                   });
                   request.fail(function (jqXHR, textStatus) {
                     console.log(textStatus, jqXHR);
