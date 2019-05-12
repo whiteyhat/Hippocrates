@@ -25,7 +25,7 @@ There is growing consensus that economic growth is not sufﬁcient to reduce pov
 To reduce inequality, Hippocrates provides an open healthcare infrastructure to be universal in principle, paying attention to the needs of disadvantaged and marginalized individuals. At the hands of volunteers and doctors, Hippocrartes digitilise clinics allowing notes to be recorded electronically - improving quality, and reducing reliance on paper notes. It provides to every patient their own digital health ‘passport’ that they can access securely and even with no internet access from anywhere.
  
 
-## Technologgy
+## Technology
 Hippocrates uses and blockchain and decentralised infrastructure for security, accountability and connectivity. Th tech stack contains:
 * IPFS - for distributed p2p file sharing and ecnrypting
 * Ethereum - for smart contracts
