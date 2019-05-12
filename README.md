@@ -1,4 +1,5 @@
 # Hippocrates
+###### An open, peer-to-peer and offline healthcare system backed by a distributed infrastructure 
 
 ## Background - Insight of a specific case
 
