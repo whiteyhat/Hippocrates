@@ -42,7 +42,8 @@ class BlockchainService {
   }
 
   async verifyDigitalSignature(data){
-
+    if (data.user.nonce) {
+      
     const msg = 'I am signing my one-time nonce: ' + data.user.nonce
     // We now are in possession of msg, publicAddress and signature. We
     // will use a helper from eth-sig-util to extract the address from the signature
@@ -63,7 +64,9 @@ class BlockchainService {
     } else {
       return false
     }
-
+    }else{
+      return false
+    }
   }
 
 }
