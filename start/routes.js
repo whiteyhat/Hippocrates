@@ -22,7 +22,9 @@ Route.get('/p', 'UserController.pdf')
 
 Route.post('/block-data', 'UserController.fetchBlockchainData')
 Route.post('/login', 'UserController.login')
+Route.post('/sign', 'UserController.selfSovereignIdentity')
+Route.post('/auth', 'UserController.digitalSign')
 Route.post('/signup', 'UserController.signup')
-Route.get('/autologin', 'UserController.autologin')
+Route.get('/logout', 'UserController.logout')
 Route.post('/new', 'UserController.newPassport')
 
