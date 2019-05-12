@@ -25,6 +25,6 @@ Route.post('/login', 'UserController.login')
 Route.post('/sign', 'UserController.selfSovereignIdentity')
 Route.post('/auth', 'UserController.digitalSign')
 Route.post('/signup', 'UserController.signup')
-Route.get('/logout', 'UserController.logout')
+Route.post('/logout', 'UserController.logout')
 Route.post('/new', 'UserController.newPassport')
 
