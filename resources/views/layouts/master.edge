@@ -53,20 +53,18 @@
   <!-- Javascript -->
   <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-
+  <script>
+    function toast(type, message) {
+     toastr.options.closeButton = true;
+     toastr.options.positionClass = 'toast-bottom-right';
+     toastr.options.showDuration = 350;
+     toastr.options.hideDuration = 1000;
+     toastr.options.timeOut = 5000;
+     toastr.options.extendedTimeOut = 1000;
+     toastr.options.preventDuplicates = true;
+     toastr[type](message);
+    }
+   </script>
   <script src="js/auth.js"></script>
-
-<script>
- function toast(type, message) {
-  toastr.options.closeButton = true;
-  toastr.options.positionClass = 'toast-bottom-right';
-  toastr.options.showDuration = 300;
-  toastr.options.hideDuration = 1000;
-  toastr.options.timeOut = 5000;
-  toastr.options.extendedTimeOut = 1000;
-  toastr.options.preventDuplicates = true;
-  toastr[type](message);
- }
-</script>
 </body>
 </html>
