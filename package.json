@@ -27,6 +27,8 @@
     "@adonisjs/session": "^1.0.27",
     "@adonisjs/shield": "^1.0.8",
     "Logger": "0.0.0",
+    "eth-sig-util": "^2.1.2",
+    "ethereumjs-util": "^6.1.0",
     "ipfs-api": "^26.1.2",
     "mysql": "^2.17.1",
     "pdfkit": "^0.9.1",
