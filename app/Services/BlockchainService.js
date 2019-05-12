@@ -31,7 +31,7 @@ class BlockchainService {
               resolve(ipfsHash[0].hash)
             }) //await ipfs.add 
         }
-      }, 1000);
+      }, 1000)
     })
     } catch (error) {
       Logger.error(error)
