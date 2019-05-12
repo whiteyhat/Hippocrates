@@ -55330,6 +55330,28 @@ XMLHttpRequest.prototype.nodejsBaseUrl = null;
     var address = null;
     var coinbase = null;
 
+    $("#logout").on('click', async function () {
+      var request = $.ajax({
+        url: "/logout",
+        data: {
+          address
+        },
+        type: 'post',
+        headers: {
+          'x-csrf-token': $('[name=_csrf]').val()
+        },
+        dataType: 'json'
+      })
+  
+      request.done(function () {
+        toast("info", "bye!")
+        setTimeout(() => {
+          window.location.replace('/')
+        }, 1000);
+      })
+  
+    })
+
 $("#login").on('click', async function () {
     if (typeof web3 !== 'undefined') {
       web3 = new Web3(web3.currentProvider);
@@ -55360,8 +55382,11 @@ $("#login").on('click', async function () {
 
     request.done(function (data) {
       try {
-        console.log(data);
-         web3.eth.personal.sign(
+        if (data.msg) {
+          toast('error', data.msg)
+        }
+
+        web3.eth.personal.sign(
           'I am signing my one-time nonce: ' + data.nonce,
           address,
           '' // MetaMask will ignore the password argument here
@@ -55379,10 +55404,13 @@ $("#login").on('click', async function () {
               });
 
               request.done(function (data) {
+                      if (data.msg) {
+
                 toast('success', data.msg);
+                }
               setTimeout(function(){
                 window.location.reload();
-              }, 800);
+              }, 1000);
               });
 
               request.fail(function (jqXHR, textStatus) {
