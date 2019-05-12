@@ -59412,11 +59412,11 @@
 
             setTimeout(function(){
             toast('info', 'Uploading IPFS Passport to the Ethereum Public Ledger');
-            }, 5000);
+            }, 2000);
 
             setTimeout(function () {
               toast('warning', 'Waiting for the transaction to be confirmed. Please, wait...');
-            }, 5000);
+            }, 7000);
             var interval = setInterval(async function () {
               await web3.eth.getTransactionReceipt(transactionHash, (err, txReceipt) => {
 
@@ -59448,7 +59448,7 @@
                   request.done(function (data) {
                     setTimeout(function () {
                       toast('warning', 'Waiting to download a blockchain certification of the patient passport');
-                    }, 7000);
+                    }, 5000);
                     setTimeout(function () {
                       window.location.replace("/temp/"+data.path)
                     }, 8000);

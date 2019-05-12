@@ -9,6 +9,7 @@ const Patient = use('App/Models/Patient')
 const PdfService = use('App/Services/PdfService')
 const BlockchainService = use('App/Services/BlockchainService')
 const Logger = use('Logger')
+const fs = require("fs")
 
 
 class UserController {
@@ -59,6 +60,13 @@ class UserController {
 
       const path = await PdfService.generatePDF(data, Date.now().toString())
       Logger.info(path)
+      setTimeout(function(){
+        // Assuming that 'path/file.txt' is a regular file.
+        fs.unlink("public/temp/"+path, (err) => {
+          if (err) throw err;
+          Logger.warning(path + " was self-deleted")
+        });
+      }, 10000);
 
       response.send({path})
       

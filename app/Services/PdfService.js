@@ -13,7 +13,15 @@ class PdfService {
       // create a PDF from PDFKit, and a table from PDFTable
       var pdf = new PdfDocument({
           autoFirstPage: false,
-          userPassword: "pass"
+          userPassword: "pass",
+          ownerPassword: "pass",
+          permissions: {
+            annotating: true,
+            copying: false,
+            modifying: false,
+            printing: "highResolution"
+          }
+         
         }),
         table = new PdfTable(pdf, {
           topMargin: 100
