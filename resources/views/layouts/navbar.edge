@@ -19,11 +19,11 @@
       
             </ul>
             <ul class="nav navbar-nav navbar-right">
-              @if(!auth.user.email)
+              @if(!auth.user.address)
               <li><a id="login"><button class="btn btn-primary">Log in</button></a></li>
               @else
               <li><a href="../navbar/">Account</a></li>
-              <li><a href="/logout">Sign out</a></li>
+              <li><a id="logout"><button class="btn btn-primary">Sign out</button></a> </li>
               @endif
       
             </ul>
