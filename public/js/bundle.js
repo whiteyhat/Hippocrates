@@ -59147,8 +59147,9 @@
     var patient, report, allergy, immunisation, social, medication = null
     var contract = null;
     var accounts = null;
-
-    const address = '0xb84b12e953f5bcf01b05f926728e855f2d4a67a9'
+    var address = null;
+    var coinbase = null;
+    const contractAddress = '0xb84b12e953f5bcf01b05f926728e855f2d4a67a9';
     //use the ABI from your contract
     const abi = [{
         "constant": true,
@@ -59176,7 +59177,7 @@
       }
     ]
 
-    
+
     $(document).ready(function () {
 
       //Initialize tooltips
@@ -59214,16 +59215,22 @@
     function prevTab(elem) {
       $(elem).prev().find('a[data-toggle="tab"]').click();
     }
-
-
     $("#save1").on('click', async function () {
+
       if (typeof web3 !== 'undefined') {
         web3 = new Web3(web3.currentProvider);
-        contract = new web3.eth.Contract(abi, address);
+        contract = new web3.eth.Contract(abi, contractAddress);
         accounts = await web3.eth.getAccounts();
+        coinbase = await web3.eth.getCoinbase();
       } else {
         // set the provider you want from Web3.providers
         web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+      }
+
+
+      if (!coinbase) {
+        toast("error", "Please, activate Metamask ")
+        return;
       }
 
       let gender = null;
@@ -59410,8 +59417,8 @@
 
             toast('info', "Passport encrypted and uploaded to IPFS with the following hash: " + transactionHash + ". <br><a href='https://ipfs.io/ipfs/" + data.hash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>");
 
-            setTimeout(function(){
-            toast('info', 'Uploading IPFS Passport to the Ethereum Public Ledger');
+            setTimeout(function () {
+              toast('info', 'Uploading IPFS Passport to the Ethereum Public Ledger');
             }, 2000);
 
             setTimeout(function () {
@@ -59450,7 +59457,7 @@
                       toast('warning', 'Waiting to download a blockchain certification of the patient passport');
                     }, 5000);
                     setTimeout(function () {
-                      window.location.replace("/temp/"+data.path)
+                      window.location.replace("/temp/" + data.path)
                     }, 8000);
                   });
                   request.fail(function (jqXHR, textStatus) {

@@ -52,8 +52,10 @@
   <!-- END WRAPPER -->
   <!-- Javascript -->
   <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+  <script src="js/auth.js"></script>
+
 <script>
  function toast(type, message) {
   toastr.options.closeButton = true;
@@ -65,23 +67,6 @@
   toastr.options.preventDuplicates = true;
   toastr[type](message);
  }
-
-  $(document).ready(function () {
-
-  // create a request to the backend for autologin
-  var request = $.ajax({
-    url: '/autologin',
-    type: 'get',
-    headers: {
-      'x-csrf-token': $('[name=_csrf]').val()
-    },
-    dataType: 'json'
-  });
-
-  request.fail(function (jqXHR, textStatus) {
-    console.log(textStatus, jqXHR);
-  });
-});
 </script>
 </body>
 </html>

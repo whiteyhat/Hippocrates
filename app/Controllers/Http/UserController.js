@@ -14,24 +14,51 @@ const fs = require("fs")
 
 class UserController {
 
-  async autologin({auth,view}) {
+  async logout({auth,view}) {
     try {
-      await auth.check()
+      await auth.logout()
       return view.render('welcome')
     } catch (error) {
-      await auth.check()
       return view.render('welcome')
     }
   }
 
-  async login({auth,request,response}) {
+  async selfSovereignIdentity({request,response}) {
     try {
-      const {email,password} = request.all()
-      await auth.remember(true).attempt(email, password)
-      
-      Logger.info('Logged in successfully')
-      return response.send('Logged in successfully')
+      const {address} = request.all()
 
+      if (!address){
+      response.status(400)
+        .send('Request should have signature and publicAddress')
+      }
+
+      const user = await User.findBy('address', address)
+
+      if (!user) {
+       response.send( 'User with public Address' + address + ' is not found in database')
+      }else{
+        response.send({nonce: user.nonce})
+      }
+    } catch (error) {
+      Logger.error(error)
+    }
+  }
+
+  async digitalSign({auth,request,response}) {
+    const {address, signature} = request.all()
+    if (!signature || !address){
+      return res
+      .status(400)
+        .send({ error: 'Request should have signature and publicAddress' })
+      }
+
+    try {
+      const user = await User.findBy('address', address)
+      const data = {user,signature}
+      if (BlockchainService.verifyDigitalSignature(data)) {
+        await auth.login(user)
+        response.send({msg: "Welcome back "})
+      } 
     } catch (error) {
       Logger.error(error)
     }
