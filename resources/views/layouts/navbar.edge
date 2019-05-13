@@ -15,7 +15,7 @@
               @if(!auth.user.wallet)
               <li><a id="login"><button class="btn btn-primary">Log in</button></a></li>
               @endif
-              @if(!auth.user.admin)
+              @if(auth.user.admin)
               <li class="{{ request.match('/admin')  ? 'active':'' }}"><a href="/admin">Admin</a></li>
               @endif
 
