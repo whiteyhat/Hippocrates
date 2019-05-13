@@ -17,14 +17,16 @@
 const Route = use('Route')
 
 Route.on('/').render('welcome')
+Route.get('/admin', 'UserController.admin')
+Route.on('/profile').render('account')
 Route.on('/new-passport').render('index')
-Route.get('/p', 'UserController.pdf')
 
 Route.post('/block-data', 'UserController.fetchBlockchainData')
 Route.post('/login', 'UserController.login')
+Route.post('/edit', 'UserController.edit')
 Route.post('/sign', 'UserController.selfSovereignIdentity')
 Route.post('/auth', 'UserController.digitalSign')
 Route.post('/signup', 'UserController.signup')
-Route.get('/logout', 'UserController.logout')
+Route.post('/logout', 'UserController.logout')
 Route.post('/new', 'UserController.newPassport')
 

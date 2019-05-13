@@ -1,16 +1,32 @@
 @layout('layouts.master')
 @section('content')
-<div class="jumbotron">
-    <h1>Welcome to Hippocrates!</h1>
-    <p>The international community has made significant strides towards lifting people out of poverty.  The most vulnerable nations – the least developed countries, the landlocked developing countries and the small island developing states – continue to make inroads into poverty reduction.  However, inequality persists and large disparities remain regarding access to health and education services and other assets. Evidence from developing countries shows that children in the poorest 20 per cent of the populations are still up to three times more likely to die before their fifth birthday than children in the richest quintiles. Hippocrates solves frontline problems in healthcare for societies with limited resources by making use of Distributed Ledger Technologies (DLT's). This project is presented in the Buidl Boston Hackathon.</p>
-    <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+@section('css')
+@endsection
+<div class="row jumbotron">
+  <div class="col-md-6">
+    <center>
+      <img src="/img/logo.png" alt="" style="height:300px">
+    </center>
   </div>
+  <div class="col-md-6">
+    <h1>Welcome to Hippocrates!</h1>
+    <p>Hippocrates is an open, peer-to-peer and offline healthcare system backed by a distributed infrastructure
+      that solves frontline problems in healthcare for societies with limited resources by making use of Distributed
+      Ledger Technologies
+      (DLT's). </p>
 
+    <p> This project is presented in the Buidl Boston Hackathon.</p>
+    <p><a id="learnMore" class="btn btn-primary btn-lg" role="button">Learn more</a></p>
+
+  </div>
+</div>
+
+<div id="content" class="container">
   <div class="row">
     <center>
       <div class="col-sm-6 col-md-4">
         <div class="thumbnail">
-          <img src="..." alt="...">
+          <img src="/img/offline.svg" alt="...">
           <div class="caption">
             <p>‘Digitise’ clinics allowing
               notes to be recorded
@@ -22,38 +38,85 @@
         </div>
       </div>
       <div class="col-sm-6 col-md-4">
-          <div class="thumbnail">
-            <img src="..." alt="...">
-            <div class="caption">
-              <p>Give every patient their
-                own digital health
-                ‘passport’ that they can
-                access securely from
-                anywhere.</p>
-              <h1>2</h1>
-            </div>
+        <div class="thumbnail">
+          <img src="/img/encryption.svg" alt="...">
+          <div class="caption">
+            <p>Give every patient their
+              own encrypted health
+              ‘passport’ that they can
+              access offline from
+              anywhere.</p>
+            <h1>2</h1>
           </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-              <img src="..." alt="...">
-              <div class="caption">
-                <p>Provide high quality data
-                  analysis, including
-                  automated activity reports
-                  for donors. No need for
-                  manual transcription.</p>
-                <h1>3</h1>
-              </div>
-            </div>
-          </div>
-    </center>
-    </div>
-
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 16%">
-          <p>Development Progress</p>
-          <span class="sr-only">16% Complete</span>
         </div>
       </div>
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <img src="/img/phone.svg" alt="...">
+          <div class="caption">
+            <p>Provide high quality data
+              analysis, including
+              automated activity reports
+              for donors. No need for
+              manual transcription.</p>
+            <h1>3</h1>
+          </div>
+        </div>
+      </div>
+  </div>
+  </center>
+
+  <br>
+</div>
+
+<div class="jumbotron media" style="background-color:white">
+  <div class="media-left">
+    <a href="#">
+      <img class="media-object"
+        src="https://www.msf.org.uk/sites/uk/files/styles/general_proportion_1_5_front/public/standard-pages/MSF154950.jpg?itok=lZXkWBaj"
+        alt="...">
+    </a>
+  </div>
+  <div class="media-body">
+    <h1 class="media-heading">Media heading</h1>
+    <p>
+
+      The international community has made significant strides towards lifting people out of poverty. The most
+      vulnerable nations – the least developed countries, the landlocked developing countries and the small island
+      developing states – continue to make inroads into poverty reduction.</p>
+    <p>However, inequality persists and large
+      disparities remain regarding access to health and education services and other assets. Evidence from developing
+      countries shows that children in the poorest 20 per cent of the populations are still up to three times more
+      likely to die before their fifth birthday than children in the richest quintiles.</p>
+    <p>Communities have complex medical and psychological needs - but have limited medical access and documentation.
+      This makes it challenging for camp volunteers to provide the best possible care.
+
+    </p>
+
+  </div>
+
+</div>
+
+<script>
+  $(document).ready(function () {
+
+        //Wizard
+        $('#learnMore').click(function() {
+
+          $('html, body').animate({
+            scrollTop: $("#content").offset().top
+          }, 1500);
+        });
+      });
+
+
+</script>
+
+<div class="progress">
+  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0"
+    aria-valuemax="100" style="width: 67%">
+    <p>Development Progress</p>
+    <span class="sr-only">67% Complete</span>
+  </div>
+</div>
 @endsection

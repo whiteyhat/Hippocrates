@@ -42,7 +42,8 @@ class BlockchainService {
   }
 
   async verifyDigitalSignature(data){
-
+    if (data.user.nonce) {
+      
     const msg = 'I am signing my one-time nonce: ' + data.user.nonce
     // We now are in possession of msg, publicAddress and signature. We
     // will use a helper from eth-sig-util to extract the address from the signature
@@ -58,12 +59,14 @@ class BlockchainService {
 
     // The signature verification is successful if the address found with
     // sigUtil.recoverPersonalSignature matches the initial publicAddress
-    if (address.toLowerCase() === data.user.address.toLowerCase()) {
+    if (address.toLowerCase() === data.user.wallet.toLowerCase()) {
       return true
     } else {
       return false
     }
-
+    }else{
+      return false
+    }
   }
 
 }
