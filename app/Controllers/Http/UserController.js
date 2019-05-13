@@ -22,6 +22,41 @@ class UserController {
     }
   }
 
+  async edit({auth, request, response}) {
+    const {role, name, email, phone, clinic, address} = request.all()
+    console.log(role)
+    console.log(name)
+    try {
+      if (auth.user.wallet) {
+        const user = await User.findBy('wallet', auth.user.wallet)
+        user.role = role
+        user.name = name
+        user.address = address
+        user.email = email
+        user.phone = phone
+        user.clinic = clinic
+        await user.save()
+        response.send({msg: "Profile saved", type: "success"})
+      } else {
+        response.send({msg: "You do not have the permissions", type: "error"})
+      }
+    } catch (error) {
+    }
+  }
+
+
+  async admin({auth, view, response}) {
+    try {
+      if (auth.user.admin) {
+        const users = await Database.select('name', 'wallet', 'image', 'created').from('users');
+        return view.render('admin', users)
+      } else {
+        response.send({msg: "You do not have the permission to view the admin panel"})
+      }
+    } catch (error) {
+    }
+  }
+
   async selfSovereignIdentity({auth, request,response}) {
     try {
       const {address} = request.all()
@@ -31,12 +66,12 @@ class UserController {
         .send('Request should have signature and publicAddress')
       } 
 
-      const user = await User.findBy('address', address)
+      const user = await User.findBy('wallet', address)
       if (!user) {          
 
        const query = await Database.select('*').from('users')
        if (!query[0]) {
-        const user = await User.create({address, admin:1})
+        const user = await User.create({wallet: address, admin:1})
         await auth.remember(true).login(user)
       }else{
         response.send({ msg: 'Sorry, only registered users can access to Hippocrates'})
@@ -59,7 +94,7 @@ class UserController {
       }
 
     try {
-      const user = await User.findBy('address', address)
+      const user = await User.findBy('wallet', address)
       const data = {user,signature}
       if (BlockchainService.verifyDigitalSignature(data)) {
         await auth.remember(true).login(user)
