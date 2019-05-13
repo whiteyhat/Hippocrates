@@ -59,7 +59,7 @@ class BlockchainService {
 
     // The signature verification is successful if the address found with
     // sigUtil.recoverPersonalSignature matches the initial publicAddress
-    if (address.toLowerCase() === data.user.address.toLowerCase()) {
+    if (address.toLowerCase() === data.user.wallet.toLowerCase()) {
       return true
     } else {
       return false
