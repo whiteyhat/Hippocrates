@@ -48,12 +48,39 @@ class UserController {
   async admin({auth, view, response}) {
     try {
       if (auth.user.admin) {
-        const users = await Database.select('name', 'wallet', 'image', 'created').from('users');
-        return view.render('admin', users)
+        const users = await Database.select('name', 'id', 'role', 'address', 'email', 'phone', 'clinic', 'wallet', 'created_at').from('users')
+        return view.render('admin', {users})
       } else {
         response.send({msg: "You do not have the permission to view the admin panel"})
       }
     } catch (error) {
+    }
+  }
+
+  async createUser({auth, request, response}) {
+    
+      try {
+        const {wallet} = request.all()
+
+      if (auth.user.admin) {
+        let msg = ""
+        let type
+        const user = await User.create({wallet: wallet.toLowerCase(), nonce: Math.floor(Math.random() * 10000)})
+        if (user) {
+          msg = "New user added"
+          type = "success"
+        }else{
+           msg = "There was an error when adding a new user"
+           type = "error"
+        }
+
+        response.send({type, msg})
+
+      } else {
+        response.send({type: "error", msg: "You do not have the permission to create"})
+      }
+    } catch (error) {
+      Logger.error(error)
     }
   }
 
@@ -71,7 +98,7 @@ class UserController {
 
        const query = await Database.select('*').from('users')
        if (!query[0]) {
-        const user = await User.create({wallet: address, admin:1})
+        const user = await User.create({wallet: address, admin:1, nonce: Math.floor(Math.random() * 10000)})
         await auth.remember(true).login(user)
       }else{
         response.send({ msg: 'Sorry, only registered users can access to Hippocrates'})
