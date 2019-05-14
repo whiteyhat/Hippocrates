@@ -59233,6 +59233,8 @@
         return;
       }
 
+      address = coinbase.toLowerCase();
+
       let gender = null;
       if ($('#male').is(':checked')) {
         gender = "male";
@@ -59385,98 +59387,190 @@
     })
 
     $("#save4").on('click', function () {
-      toast('info', 'Encrypting and uploading patient passport to IPFS');
-      console.log("Receiving hash...")
+      var check1 = $('input[name="reg1"]:checked').length > 0;
+      var check2 = $('input[name="reg2"]:checked').length > 0;
+      var check3 = $('input[name="reg3"]:checked').length > 0;
+      var pass = $('#encryptPassword').val();
 
-      var request = $.ajax({
-        url: "/new",
-        data: {
-          patient,
-          report,
-          allergy,
-          immunisation,
-          social,
-          medication
-        },
-        type: 'post',
-        headers: {
-          'x-csrf-token': $('[name=_csrf]').val()
-        },
-        dataType: 'json'
-      })
+    if (check1 && check2 && check3 && pass != undefined) {
+      $('#loader').fadeToggle()
+      $('#createPass').fadeToggle()
 
-      request.done(function (data) {
+      
+      const message = "As a "+ $('[name=doctorRole]').val()+" of the "+$('[name=doctorClinic]').val()+", I can confirm that the accuracy of this medical record is my responsibility and/or "+$('[name=doctorClinic]').val()+"'s responsabity. This medical record is confidential and belongs uniquely to " + patient.name + " or his/her or legal guardian. This data has been encrypted with a password provided by " +
+      patient.name + " or his/her legal guardian. \n\n Me, "+$('[name=doctorName]').val()+ ", I agree with this terms and use my public keys from my Web3 provider to sign this legitimate document, today, " + formatDate(new Date) +"."
 
-        contract.methods.sendHash(data.hash).send({
-          from: accounts[0]
-        }, async (error, transactionHash) => {
+      web3.eth.personal.sign(message,address,'', async (error, signature) => {
 
-          if (error) {
-            toast('error', 'IPFS Passport failing while uploading to the Ethereum Public Ledger');
-          } else {
+          if (signature) {
+                          
+              toast('info', 'Encrypting and uploading patient passport to IPFS');
+              console.log("Receiving hash...")
+        
+              var request = $.ajax({
+                url: "/new",
+                data: {
+                  patient,
+                  report,
+                  allergy,
+                  immunisation,
+                  social,
+                  medication
+                },
+                type: 'post',
+                headers: {
+                  'x-csrf-token': $('[name=_csrf]').val()
+                },
+                dataType: 'json'
+              })
+        
+              request.done(function (data) {
+                $('#loader1').attr("src","img/check.gif");
 
-            toast('info', "Passport encrypted and uploaded to IPFS with the following hash: " + transactionHash + ". <br><a href='https://ipfs.io/ipfs/" + data.hash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>");
+                const ipfsHash = data.hash
 
-            setTimeout(function () {
-              toast('info', 'Uploading IPFS Passport to the Ethereum Public Ledger');
-            }, 2000);
+                toast('info', "Passport encrypted and uploaded to IPFS with the following hash: " + ipfsHash + ". <br><a href='https://ipfs.io/ipfs/" + ipfsHash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>");
 
-            setTimeout(function () {
-              toast('warning', 'Waiting for the transaction to be confirmed. Please, wait...');
-            }, 7000);
-            var interval = setInterval(async function () {
-              await web3.eth.getTransactionReceipt(transactionHash, (err, txReceipt) => {
-
-                if (txReceipt) {
-                  clearInterval(interval);
-
-                  toast('success', "Patient Passport intergity secured in hash: " + transactionHash + ". <br><a href='https://rinkeby.etherscan.io/tx/" + transactionHash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>")
-                  var request = $.ajax({
-                    url: "/block-data",
-                    data: {
-                      patient,
-                      report,
-                      allergy,
-                      immunisation,
-                      social,
-                      medication,
-                      blockHash: txReceipt.blockHash,
-                      blockNumber: txReceipt.blockNumber,
-                      txid: transactionHash,
-                      filehash: data.hash
-                    },
-                    type: 'post',
-                    headers: {
-                      'x-csrf-token': $('[name=_csrf]').val()
-                    },
-                    dataType: 'json'
-                  })
-
-                  request.done(function (data) {
+                contract.methods.sendHash(ipfsHash).send({
+                  from: accounts[0]
+                }, async (error, transactionHash) => {
+        
+                  if (error) {
+                    toast('error', 'IPFS Passport failing while uploading to the Ethereum Public Ledger');
+                    $('#loader').fadeToggle()
+                    $('#createPass').fadeToggle()
+                  } else {
+        
                     setTimeout(function () {
-                      toast('warning', 'Waiting to download a blockchain certification of the patient passport');
-                    }, 5000);
+                      toast('info', 'Uploading IPFS Passport to the Ethereum Public Ledger');
+                    }, 2000);
+        
                     setTimeout(function () {
-                      window.location.replace("/temp/" + data.path)
-                    }, 8000);
-                  });
-                  request.fail(function (jqXHR, textStatus) {
-                    console.log(textStatus, jqXHR);
-                  });
+                      toast('warning', 'Waiting for the transaction to be confirmed. Please, wait...');
+                    }, 7000);
+                    var interval = setInterval(async function () {
+                      await web3.eth.getTransactionReceipt(transactionHash, (err, txReceipt) => {
+        
+                        if (txReceipt) {
+                          clearInterval(interval);
 
-                }
-              }); //await for getTransactionReceipt
-            }, 4000);
+                          $('#loader2').attr("src","img/check.gif");
+                          toast('success', "Patient Passport intergity secured in hash: " + transactionHash + ". <br><a href='https://rinkeby.etherscan.io/tx/" + transactionHash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>")
+                          var request = $.ajax({
+                            url: "/block-data",
+                            data: {
+                              patient,
+                              report,
+                              allergy,
+                              immunisation,
+                              social,
+                              medication,
+                              blockHash: txReceipt.blockHash,
+                              blockNumber: txReceipt.blockNumber,
+                              txid: transactionHash,
+                              filehash: data.hash,
+                              signature,
+                              message,
+                              address,
+                              password: $('[name=encryptPassword]').val(),
+                              doctor:{
+                                clinic: $('[name=doctorClinic]').val(),
+                                name: $('[name=doctorName]').val(),
+                                role: $('[name=doctorRole]').val(),
+                                phone: $('[name=doctorPhone]').val(),
+                                email: $('[name=doctorEmail]').val(),
+                                clinicAddress: $('[name=doctorClinicAddress]').val()
+                          }
+                            },
+                            type: 'post',
+                            headers: {
+                              'x-csrf-token': $('[name=_csrf]').val()
+                            },
+                            dataType: 'json'
+                          })
+        
+                          request.done(function (result) {
+                            setTimeout(function () {
+                              toast('info', 'Downloading a Passport certification');
+                              $('#loader3').attr("src","img/check.gif");
+                              setTimeout(() => {
+                                $('#loader').fadeToggle()
+
+                                console.log(result.finalHash)
+                              $('#passportView').fadeToggle()
+                              $('#passportQR').attr("src","https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://ipfs.io/ipfs/"+result.finalHash);
+                              $('#viewQR').attr("href","temp/"+result.path);
+
+                              $('#downloadQrCode').on('click', function(){
+                                var a = $("<a>")
+                                .attr("href", "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://ipfs.io/ipfs/"+result.finalHash)
+                                .attr("download", "img.png")
+                                .appendTo("body");
+
+                            a[0].click();
+                            a.remove();
+                              })
+                              
+                              $('#linkQR').attr("href","https://ipfs.io/ipfs/"+result.finalHash);
+                            }, 400);
+                            }, 1000);
+                          });
+                          request.fail(function (jqXHR, textStatus) {
+                            console.log(textStatus, jqXHR);
+                            $('#loader').fadeToggle()
+                            $('#createPass').fadeToggle()
+                          });
+        
+                        }
+                      }); //await for getTransactionReceipt
+                    }, 4000);
+                  }
+                });
+                console.log(data);
+        
+              });
+              request.fail(function (jqXHR, textStatus) {
+                console.log(textStatus, jqXHR);
+                $('#loader').fadeToggle()
+                $('#createPass').fadeToggle()
+              });
+
+            request.fail(function (jqXHR, textStatus) {
+              console.log(textStatus, jqXHR);
+              $('#loader').fadeToggle()
+              $('#createPass').fadeToggle()
+            });
+          }else{
+              toast('error', 'Sorry, We could not get your signature')
+              $('#loader').fadeToggle()
+              $('#createPass').fadeToggle()
           }
-        });
-        console.log(data);
-
-      });
-      request.fail(function (jqXHR, textStatus) {
-        console.log(textStatus, jqXHR);
-      });
-
+        })
+    }else{
+      toast("error", "Confirm the required checkbox are marked and make sure the patient has typed a password")
+    }
+    
     })
+
+    function formatDate(date) {
+      var monthNames = [
+        "January", "February", "March",
+        "April", "May", "June", "July",
+        "August", "September", "October",
+        "November", "December"
+      ];
+  
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var seconds = date.getSeconds();
+  
+      var day = date.getDate();
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
+  
+      return day + ' of ' + monthNames[monthIndex] + ' of ' + year + ' at ' + hours + ':' + minutes + ':' + seconds;
+    }
+
   }, {
     "web3": 486
   }]
