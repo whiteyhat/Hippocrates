@@ -22,7 +22,7 @@
       <h2 id="nameLabel">{{auth.user.name}}</h2>
       @endif
       <br>
-      <button id="delete" class="btn btn-danger" style="background-color:tomato"><i class="far fa-trash-alt"></i>
+      <button data-toggle="modal" data-target="#deleteAccount" id="delete" class="btn btn-danger" style="background-color:tomato"><i class="far fa-trash-alt"></i>
         <span>Delete</span></button>
       <button id="save" style="background-color:teal; display:none; color:white" class="btn"><i class="fas fa-save"></i>
         <span>Save</span></button>
@@ -89,7 +89,48 @@
             </ul-->
 </div>
 
+<div id="deleteAccount" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Delete a user</h4>
+        </div>
+        <div class="modal-body">
+          <p>Do you want to delete your profile?</p>
+        </div>
+        <div class="modal-footer">
+          <button id="deleteSure" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 <script>
+
+$("#deleteSure").on("click", function(){
+        var request = $.ajax({
+              url: "/delete",
+              type: 'post',
+              headers: {
+                'x-csrf-token': $('[name=_csrf]').val()
+              },
+              dataType: 'json'
+            })
+      
+            request.done(function (data) {
+              toast(data.type, data.msg);
+              setTimeout(() => {
+                window.location.replace('/')
+              }, 800);
+            });
+            request.fail(function (jqXHR, textStatus) {
+              toast('error', textStatus + jqXHR);
+            });
+      })
   $("#edit").on("click", function () {
     $("#nameLabel").toggle()
     $("#addressLabel").toggle()
