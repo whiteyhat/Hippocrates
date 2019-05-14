@@ -18,7 +18,7 @@ const Route = use('Route')
 
 Route.on('/').render('welcome')
 Route.get('/admin', 'UserController.admin')
-Route.on('/profile').render('account')
+Route.on('/profile').render('profile')
 Route.on('/new-passport').render('index')
 
 Route.post('/delete', 'UserController.deleteAccount')
