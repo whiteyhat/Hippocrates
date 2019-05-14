@@ -57,15 +57,58 @@ class UserController {
     }
   }
 
+  async deleteAccount({auth, response, request}) {
+    const {id} = request.all()
+    let msg = ""
+    let type = ""
+    try {
+      if (auth.user.admin) {
+
+        await Database
+        .table('tokens')
+        .where('user_id', id)
+        .delete()
+
+        await Database
+        .table('users')
+        .where('id', id)
+        .delete()
+        msg = "User deleted"
+        type = "success"
+      } else {
+        if (auth.user.id) {
+          await Database
+          .table('tokens')
+          .where('user_id', auth.user.id)
+          .delete()
+
+          await Database
+          .table('users')
+          .where('id', auth.user.id)
+          .delete()
+
+          msg = "User deleted"
+          type = "success"
+          Logger.info("user deletedx")
+        }
+      }
+      response.send({type, msg})
+    } catch (error) {
+      Logger.error(error)
+    }
+  }
+
   async createUser({auth, request, response}) {
     
       try {
         const {wallet} = request.all()
 
       if (auth.user.admin) {
+        const nonce = Math.floor(Math.random() * 10000)
+        Logger.info(nonce)
         let msg = ""
-        let type
-        const user = await User.create({wallet: wallet.toLowerCase(), nonce: Math.floor(Math.random() * 10000)})
+        let type = ""
+        const user = await User.create({wallet: wallet.toLowerCase(), nonce })
         if (user) {
           msg = "New user added"
           type = "success"
@@ -98,7 +141,8 @@ class UserController {
 
        const query = await Database.select('*').from('users')
        if (!query[0]) {
-        const user = await User.create({wallet: address, admin:1, nonce: Math.floor(Math.random() * 10000)})
+        const nonce = Math.floor(Math.random() * 10000)
+        const user = await User.create({wallet: address, admin:1, nonce})
         await auth.remember(true).login(user)
       }else{
         response.send({ msg: 'Sorry, only registered users can access to Hippocrates'})
