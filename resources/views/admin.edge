@@ -26,7 +26,7 @@
     <tr>
       <th>#</th>
       <th>Name</th>
-      <th>Date Created</th>
+      <th>User Created</th>
       <th>Role</th>
       <th>Action</th>
     </tr>
@@ -35,20 +35,20 @@
     @each(user in users)
     <tr>
       <td>{{user.id}}</td>
-      <td><a href="#info" data-toggle="modal"><img src="https://avatars.dicebear.com/v2/jdenticon/{{user.wallet}}.svg"
+      <td><a href="#info{{user.id}}" data-toggle="modal"><img src="https://avatars.dicebear.com/v2/jdenticon/{{user.wallet}}.svg"
             class="avatar" alt="Avatar" style="height:30px">{{user.name}}</a></td>
       <td>{{user.created_at}}</td>
       <td>{{user.role}}</td>
       <td>
         <a href="#info" data-toggle="modal" class="settings"><i title="More information" data-placement="left"
             data-toggle="tooltip" class="fas fa-info-circle"></i></a>
-        <a href="#deleteUser" data-toggle="modal" class="delete"><i title="Delete" data-placement="left"
+        <a href="#deleteUser{{user.id}}" data-toggle="modal" class="delete"><i title="Delete" data-placement="left"
             data-toggle="tooltip" class="fas fa-times-circle"></i>
 
         </a>
       </td>
     </tr>
-    <div id="info" class="modal fade" role="dialog">
+    <div id="info{{user.id}}" class="modal fade" role="dialog">
       <div class="modal-dialog">
 
         <!-- Modal content-->
@@ -91,7 +91,7 @@
 
       </div>
     </div>
-    <div id="deleteUser" class="modal fade" role="dialog">
+    <div id="deleteUser{{user.id}}" class="modal fade" role="dialog">
       <div class="modal-dialog">
 
         <!-- Modal content-->
@@ -104,12 +104,38 @@
             <p>Do you want to delete {{user.name}} profile?</p>
           </div>
           <div class="modal-footer">
-            <button id="finalDelete" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
+            <button id="finalDelete{{user.id}}" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
           </div>
         </div>
 
       </div>
     </div>
+
+    <script>
+    $("#finalDelete"+{{user.id}}).on("click", function(){
+        var request = $.ajax({
+              url: "/delete",
+              type: 'post',
+              data: {
+                  id: {{user.id}}
+              },
+              headers: {
+                'x-csrf-token': $('[name=_csrf]').val()
+              },
+              dataType: 'json'
+            })
+      
+            request.done(function (data) {
+              toast(data.type, data.msg);
+              setTimeout(() => {
+                window.location.reload()
+              }, 800);
+            });
+            request.fail(function (jqXHR, textStatus) {
+              toast('error', textStatus + jqXHR);
+            });
+      })
+    </script>
     @endeach
   </tbody>
 </table>
