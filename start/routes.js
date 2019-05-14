@@ -21,6 +21,7 @@ Route.get('/admin', 'UserController.admin')
 Route.on('/profile').render('account')
 Route.on('/new-passport').render('index')
 
+Route.post('/delete', 'UserController.deleteAccount')
 Route.post('/create-new', 'UserController.createUser')
 Route.post('/block-data', 'UserController.fetchBlockchainData')
 Route.post('/login', 'UserController.login')
