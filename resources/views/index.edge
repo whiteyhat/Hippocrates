@@ -1,13 +1,77 @@
 @layout('layouts.master')
+@section('css')
+<style>
+.loader,
+.loader:before,
+.loader:after {
+  border-radius: 50%;
+}
+.loader {
+  color: #ffffff;
+  font-size: 11px;
+  text-indent: -99999em;
+  margin: 55px auto;
+  position: relative;
+  width: 10em;
+  height: 10em;
+  box-shadow: inset 0 0 0 1em;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+.loader:before,
+.loader:after {
+  position: absolute;
+  content: '';
+}
+.loader:before {
+  width: 5.2em;
+  height: 10.2em;
+  background: #0dc5c1;
+  border-radius: 10.2em 0 0 10.2em;
+  top: -0.1em;
+  left: -0.1em;
+  -webkit-transform-origin: 5.2em 5.1em;
+  transform-origin: 5.2em 5.1em;
+  -webkit-animation: load2 2s infinite ease 1.5s;
+  animation: load2 2s infinite ease 1.5s;
+}
+.loader:after {
+  width: 5.2em;
+  height: 10.2em;
+  background: #0dc5c1;
+  border-radius: 0 10.2em 10.2em 0;
+  top: -0.1em;
+  left: 5.1em;
+  -webkit-transform-origin: 0px 5.1em;
+  transform-origin: 0px 5.1em;
+  -webkit-animation: load2 2s infinite ease;
+  animation: load2 2s infinite ease;
+}
+@-webkit-keyframes load2 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load2 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+</style>
+@endsection
 @section('content')
-
-
-<div class="jumbotron jumbotron-fluid">
-  <div class="container-fluid">
-    <h1 class="display-4">Create Medical Passport</h1>
-    <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
-  </div>
-</div>
 
 <div class="container">
   <div class="row">
@@ -388,22 +452,89 @@
               </ul>
             </div>
             <div class="tab-pane" role="tabpanel" id="complete">
+
+                <div style="display:none" id="passportView">
+                    <div class="container">
+                      <div class="row">
+                          <center>
+                          <a id="linkQR" href=""><img id="passportQR" src="" alt="Passport"></a>
+                        </center>
+                          <br>
+                      </div>
+                      <center>
+                          <div class="row">
+                              <a id="downloadQrCode" class="btn btn-success" href=""><i class="far fa-save"></i> Download Passport</a>
+                              <a id="viewQR" class="btn btn-primary" href=""><i class="far fa-eye"></i> View Passport</a>
+                          </div>
+                      </center>
+                  </div>
+                </div>
+
+                <div style="display:none" id="loader">
+                    <div class="container-fluid">
+                      <div class="row">
+                        <div class="col-md-4">
+                            <center>
+                          <h1 style="font-size:35px">1</h1>
+                          <h3 style="color:gray"> Uploading Passport to IPFS</h3>
+                          <img id="loader1" style="height:200px" src="img/loading.gif" alt="loading...">
+                        </div>
+                        <div class="col-md-4">
+                            <center>
+                            <h1 style="font-size:35px"> 2</h1>
+                            <h3 style="color:gray"> Linking IPFS to Ethereum </h3>
+                            <img id="loader2" style="height:200px" src="img/loading.gif" alt="loading..."></center>
+                          </div>
+                          <div class="col-md-4">
+                              <center>
+                              <h1 style="font-size:35px">3</h1>
+                              <h3 style="color:gray"> Downloading Passport </h3>
+                              <img id="loader3" style="height:200px" src="img/loading.gif" alt="loading..."></center>
+                            </div>
+                      </div>
+                    </div>
+                  </div>
+
+              <div id="createPass">
+
+
               <h3>CREATE PASSPORT</h3>
-              <p>When you have finished entering data, enter your email to sign, then press 'save'. This
-                will create a NEW passport and QR code.</p>
+              <div class="controls">
+                <label class="checkbox">
+                        <input class="required" type="checkbox" name="reg1" value="I confirm that this data is legitimately approved by me." />I confirm that this data is legitimately approved by me.
+                      </label> 
+                      <label class="checkbox">
+                   
+                        <input class="required" type="checkbox" name="reg2" value="I confirm that the patient or legal guardian has added a password to encryrpt this data." /> I confirm that the patient or legal guardian has added a password to encryrpt this data.
+                      </label> 
+
+                      <label class="checkbox">
+                   
+                          <input type="checkbox" name="reg3" value="I confirm that the patient or legal guardian has added a password to encryrpt this data." /> I agree to add my email and phone number to the passport in case of emergency.
+                        </label> 
+
+              </div>
+              <p>When you have finished entering data, allow the patient to type a password to encrypt his/her medical passport. 
+                Then press 'Create Passport'. You will have to sign with your keys the patient data using a <a href="https://blockchainhub.net/web3-decentralized-web/">Web3 provider.</a> </p>
               <div class="row">
-                <input type="name" class="form-control" id="email" placeholder="Email">
+                  <div class="input-group input-group-lg">
+                      <span class="input-group-addon" id="sizing-addon1"><i class="fas fa-lock"></i></span>
+                      <input type="password" id="encryptPassword" name="encryptPassword" class="form-control" placeholder="Let the patient type a password to encrypt the passport"
+                        aria-describedby="sizing-addon1">
+                    </div>
               </div>
               <br>
-              <button id="save4" type="button" style="width:100%" class="btn btn-success">Save and continue</button>
-              <br>
+              <button id="save4" type="button" style="width:100%" class="btn btn-success">Create Passport</button>
+              <br><br>
 
               <p class="text-muted">The accuracy of this record is the responsibility of the person and institution
-                entering the data. Once encrypted, this passport can only be accessed via the QR code, or the
-                associated link. All data is is owned by the client or legal guardian, who must keep the QR code safe.
+                entering the data.
+                
+                 All data is is owned by the patient or legal guardian, who must keep the password to unencrypt his/her data. Once unencrypted, this passport can only be accessed via the QR code, or the associated link.
               </p>
 
             </div>
+          </div>
           </div>
           <div class="clearfix"></div>
       </div>
@@ -411,6 +542,14 @@
   </div>
   </section>
 </div>
+
+<input type="hidden" name="doctorName" value={{auth.user.name}}>
+<input type="hidden" name="doctorRole" value={{auth.user.role}}>
+<input type="hidden" name="doctorClinic" value={{auth.user.clinic}}>
+<input type="hidden" name="doctorPhone" value={{auth.user.phone}}>
+<input type="hidden" name="doctorClinicAddress" value={{auth.user.address}}>
+<input type="hidden" name="doctorEmail" value={{auth.user.email}}>
+
 </div>
 {{ script('js/bundle.js') }}
 @endsection
