@@ -201,7 +201,7 @@ class UserController {
       await BlockchainService.uploadToIPFS("public/temp/"+path).then(function(result) {
         Logger.info("FINAL IPFS HASH: " + result.hash)
         response.send({
-          hash:result.hash,
+          finalHash:result.hash,
           path
         })
       }).catch(function(error) {
