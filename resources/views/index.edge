@@ -73,6 +73,12 @@
 @endsection
 @section('content')
 
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+
+</script>
 <div class="container">
   <div class="row">
     <section>
@@ -463,8 +469,8 @@
                       </div>
                       <center>
                           <div class="row">
-                              <a id="downloadQrCode" class="btn btn-success" href=""><i class="far fa-save"></i> Download Passport</a>
-                              <a id="viewQR" class="btn btn-primary" href=""><i class="far fa-eye"></i> View Passport</a>
+                              <a id="downloadQrCode" class="btn btn-success" href="" title="Print Passport for patients or legal guardians" data-placement="left" data-toggle="tooltip"><i class="far fa-save"></i> Download Passport</a>
+                              <a id="viewQR" class="btn btn-primary" href="" title="This link self-destructs itself in 60 sec" data-placement="right" data-toggle="tooltip"><i class="far fa-eye"></i> View Passport</a>
                           </div>
                       </center>
                   </div>
