@@ -59404,9 +59404,7 @@
 
           if (signature) {
                           
-              toast('info', 'Encrypting and uploading patient passport to IPFS');
-              console.log("Receiving hash...")
-        
+              toast('info', 'Encrypting and uploading patient passport to IPFS');        
               var request = $.ajax({
                 url: "/new",
                 data: {
@@ -59496,7 +59494,6 @@
                               setTimeout(() => {
                                 $('#loader').fadeToggle()
 
-                                console.log(result.finalHash)
                               $('#passportView').fadeToggle()
                               $('#passportQR').attr("src","https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://ipfs.io/ipfs/"+result.finalHash);
                               $('#viewQR').attr("href","temp/"+result.path);
@@ -59526,7 +59523,6 @@
                     }, 4000);
                   }
                 });
-                console.log(data);
         
               });
               request.fail(function (jqXHR, textStatus) {
