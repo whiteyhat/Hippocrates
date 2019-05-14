@@ -3,18 +3,34 @@ const fs = require("fs")
 const Logger = use('Logger')
 const PdfDocument = require('pdfkit')
 const PdfTable = require('voilab-pdf-table')
+const sudo = require('sudo-js');
 
+const Env = use('Env')
 class PdfService {
+
+  autoDeletePdf(path){
+    setTimeout(function(){
+        
+      sudo.setPassword(Env.get('SUDO_PASSWORD'))
+      const command = ['rm', '-rf', "public/temp/"+path];
+      sudo.exec(command, function(err, pid, result) {
+      });
+    }, 100000);
+  }
 
   generatePDF(data, name) {
 
     let filename = "public/temp/" + name + ".pdf"
     try {
+      let pass = ""
+      if (data.password != undefined) {
+        pass = data.password
+      }
       // create a PDF from PDFKit, and a table from PDFTable
       var pdf = new PdfDocument({
           autoFirstPage: false,
-          userPassword: "pass",
-          ownerPassword: "pass",
+          userPassword: pass,
+          ownerPassword: pass,
           permissions: {
             annotating: true,
             copying: false,
@@ -62,7 +78,9 @@ class PdfService {
       if (data.blockchain) {
         const validation = 6
         const link = "https://rinkeby.etherscan.io/tx/" + data.blockchain.txid
+        const walletLink = "https://rinkeby.etherscan.io/tx/" + data.blockchain.address
         const ipfsLink = "https://ipfs.io/ipfs/" + data.blockchain.filehash
+
 
         pdf
         .image('public/img/logo.png', 250, 60, {
@@ -70,7 +88,7 @@ class PdfService {
           scale: 0.25
         })
         .moveDown()
-        .font('public/fonts/roboto.ttf', 25)
+        .font('public/fonts/bold.ttf', 25)
         .text('Hippocrates Passport Certification',{
           align: 'center',
         }, 170, 50)
@@ -113,7 +131,68 @@ class PdfService {
           indent: 30,
           height: 300,
           ellipsis: true
-        });
+        })
+        .moveDown()
+        .font('public/fonts/bold.ttf', 19)
+        .text( "Passport Emitter",{
+          width: 470,
+          align: 'center',
+          indent: 30,
+          height: 300,
+          ellipsis: true
+        })
+        .moveDown()
+        .font('public/fonts/roboto.ttf', 13)
+        .text( "This medical passport has been emitted by " + data.doctor.name + ", " + data.doctor.role + " at the " + data.doctor.clinic + ". This institution is located at " + data.doctor.clinicAddress + " and can be reachable via email ("+data.doctor.email+") or phone ("+data.doctor.phone+"). Hippocrates certifies that the Declaration Terms represented in the next parargraph have been signed digitally using the following Ethereum wallet: ",{
+          width: 470,
+          align: 'justify',
+          indent: 30,
+          height: 300,
+          ellipsis: true
+        })
+        .fillColor('blue')
+        .font('public/fonts/roboto.ttf', 13)
+        .text(data.blockchain.address,{
+          link: walletLink,
+          underline: true
+        })
+        .fillColor('black')
+        .font('public/fonts/roboto.ttf', 13)
+        .text( " and with the signature hash: ",{
+          width: 470,
+          align: 'justify',
+          indent: 30,
+          height: 300,
+          ellipsis: true
+        })
+        .fillColor('blue')
+        .font('public/fonts/roboto.ttf', 13)
+        .text(data.blockchain.signature,{
+          link: "https://etherscan.io/verifySig",
+          underline: true
+        })
+        .moveDown()
+        .fillColor('black')
+        .font('public/fonts/bold.ttf', 19)
+        .text( "Passport Emitter Declaration",{
+          width: 470,
+          align: 'center',
+          indent: 30,
+          height: 300,
+          ellipsis: true
+        })
+        .moveDown()
+        .font('public/fonts/italic.ttf', 11)
+        .text( data.blockchain.message,{
+          width: 470,
+          align: 'justify',
+          indent: 30,
+          height: 300,
+          ellipsis: true
+        })
+        .font('public/fonts/italic.ttf', 13)
+        .moveDown()
+
       }
 
       pdf.fontSize(11).font('public/fonts/roboto.ttf', 13).moveDown()
