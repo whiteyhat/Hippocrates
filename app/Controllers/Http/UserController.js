@@ -221,58 +221,7 @@ class UserController {
 
     if (auth.user.id) {
         const {patient,report,allergy,immunisation,social,medication} = request.all()
-  
-        const patien = await Patient.create({
-          doctor_id: await auth.user.id,
-          name: patient.name,
-          dob: patient.dob,
-          gender: patient.gender
-        })
-  
-        const repor = await Report.create({
-          patient_id: patien.id,
-          condition: report.condition,
-          year: report.year,
-          notes: report.notes
-        })
-  
-        const allerg = await Allergy.create({
-          patient_id: patien.id,
-          allergy: allergy.name,
-          risk: allergy.risk,
-          notes: allergy.notes
-        })
-  
-        const immunisatio = await Immunisation.create({
-          patient_id: patien.id,
-          name: immunisation.name,
-          date: immunisation.year,
-        })
-  
-        const socia = await Social.create({
-          patient_id: patien.id,
-          mobility: social.mobility,
-          eating: social.eating,
-          dressing: social.dressing,
-          toileting: social.toileting,
-          washing: social.washing,
-          functions: social.activity,
-          behaviour: social.behaviour
-        })
-  
-        const medicatio = await Medication.create({
-          patient_id: patien.id,
-          medication: medication.name,
-          dose: medication.dose,
-          monday: medication.monday,
-          tuesday: medication.tuesday,
-          wednesday: medication.wednesday,
-          thursday: medication.thursday,
-          friday: medication.friday,
-          saturday: medication.saturday,
-          sunday: medication.sunday,
-          description: medication.plan
-        })
+        // Logger.info(image)
   
         const data = {
           patient,
