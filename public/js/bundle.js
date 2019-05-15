@@ -59144,7 +59144,16 @@
   }],
   496: [function (require, module, exports) {
     var Web3 = require('web3');
-    var patient, report, allergy, immunisation, social, medication = null
+    var patient, report, allergy, immunisation, social, medication = null;
+    var conditionCounter = 0;
+    var allergyCounter = 0; 
+    var immunisationCounter = 0;
+    var medication = 0;
+    var conditionArray = [];
+    var allergyArray = [];
+    var immunisationArray = [];
+    var medicationArray = [];
+    var image = ""
     var contract = null;
     var accounts = null;
     var address = null;
@@ -59215,6 +59224,72 @@
     function prevTab(elem) {
       $(elem).prev().find('a[data-toggle="tab"]').click();
     }
+    $("#add-condition").on('click', async function () {
+
+      report = {
+          condition: $("#condition").val(),
+          year: $("#year").val(),
+          notes: $("#condition-notes").val()
+      }
+
+      conditionArray.push(report)
+      conditionCounter++;
+      console.log(conditionArray);
+
+      $('#conditionblock').append('<div class="input-group input-group-sm"><span class="input-group-addon"><b>Condition</b></span><input disabled value="'+report.condition+'" type="text" class="form-control"aria-describedby="sizing-addon1"><span class="input-group-addon" id="sizing-addon1"><b>Year</b></span><input value="'+report.year+'" disabled type="text" class="form-control"aria-describedby="sizing-addon1"></div><br><div class="form-group"><label for="exampleFormControlTextarea1" class="text-muted">Additional Notes</label><textarea class="form-control" disabled rows="3">' +report.notes+'</textarea></div><legend></legend>')
+    
+      $("#condition").val("")
+      $("#year").val("")
+      $("#condition-notes").val("")
+      toast("info", "New condition added")
+
+    })
+
+    $("#add-allergy").on('click', function () {
+      let risk = "No";
+      if ($('#risk').is(':checked')) {
+        risk = "Yes";
+      }
+
+      allergy = {
+          name: $("#allergy-name").val(),
+          risk: risk,
+          notes: $("#allergy-notes").val()
+      }
+
+      allergyArray.push(allergy)
+      allergyCounter++;
+      console.log(allergy);
+
+      if (risk) {
+        $('#allergyblock').append('<div class="input-group input-group-sm"><span class="input-group-addon" id="sizing-addon1"><b>Allergy</b></span><input disabled value="'+allergy.name+'" type="text" class="form-control"aria-describedby="sizing-addon1"><span class="input-group-addon" id="sizing-addon1"><b>High Risk</b></span><input value="Yes" disabled type="text" class="form-control"aria-describedby="sizing-addon1"></div><br><div class="form-group"><label for="exampleFormControlTextarea1" class="text-muted">Additional Notes</label><textarea class="form-control" disabled rows="3">' +allergy.notes+'</textarea></div><legend></legend>')
+      }else{
+        $('#allergyblock').append('<div class="input-group input-group-sm"><span class="input-group-addon" id="sizing-addon1"><b>Allergy</b></span><input disabled value="'+allergy.name+'" type="text" class="form-control"aria-describedby="sizing-addon1"><span class="input-group-addon" id="sizing-addon1"><b>High Risk</b></span><input value="No" disabled type="text" class="form-control"aria-describedby="sizing-addon1"></div><br><div class="form-group"><label for="exampleFormControlTextarea1" class="text-muted">Additional Notes</label><textarea class="form-control" disabled rows="3">' +allergy.notes+'</textarea></div><legend></legend>')
+      }
+      toast("info", "New allergy added")
+      $("#allergy-name").val("")
+      $("#allergy-notes").val("")
+      $('#risk').prop('checked', false);
+    })
+
+
+    $("#add-immunisation").on('click', function () {
+      
+      immunisation = {
+          name: $("#immunisation-name").val(),
+          year: $("#immunisation-date").val()
+      }
+      immunisationArray.push(immunisation)
+      immunisationCounter++;      
+      console.log(immunisationArray);
+      $('#immunisationblock').append('<div class="input-group input-group-sm"><span class="input-group-addon" id="sizing-addon1"><b>Allergy</b></span><input  disabled value="'+immunisation.name+'" type="text" class="form-control"aria-describedby="sizing-addon1"><span class="input-group-addon" id="sizing-addon1"><b>Date</b></span><input value="'+immunisation.year+'" disabled type="text" class="form-control"aria-describedby="sizing-addon1"></div><legend></legend>')
+      
+
+      $("#immunisation-name").val("")
+      $("#immunisation-date").val("")
+      toast("info", "New immunisation added")
+
+    })
     $("#save1").on('click', async function () {
 
       if (typeof web3 !== 'undefined') {
@@ -59241,6 +59316,7 @@
       } else {
         gender = "female"
       }
+
       patient = {
         name: $("#name").val(),
         dob: $("#dob").val(),
@@ -59251,31 +59327,24 @@
 
     })
 
+    $("#changePicture").on('change', async function () {
+
+      var file    = document.querySelector('input[type=file]').files[0];
+      var reader  = new FileReader();
+    
+      reader.onloadend = function () {
+        $("#userPic").attr("src", reader.result)
+        image = reader.result;
+      }
+    
+      if (file) {
+        reader.readAsDataURL(file);
+      } else {
+        $("#userPic").src("")
+      }
+    })
+
     $("#save2").on('click', function () {
-      report = {
-        condition: $("#condition").val(),
-        year: $("#year").val(),
-        notes: $("#condition-notes").val()
-      }
-      console.log(report);
-
-      let risk = 0;
-      if ($('#risk').is(':checked')) {
-        risk = 1;
-      }
-
-      allergy = {
-        name: $("#allergy-name").val(),
-        risk: risk,
-        notes: $("#allergy-notes").val()
-      }
-      console.log(allergy);
-
-      immunisation = {
-        name: $("#immunisation-name").val(),
-        year: $("#immunisation-date").val()
-      }
-      console.log(immunisation);
 
       let mobility = null;
       if ($('#mobility-independent').is(':checked')) {
@@ -59337,37 +59406,47 @@
 
     })
 
-    $("#save3").on('click', function () {
-      let monday = 0;
-      let tuesday = 0;
-      let wednesday = 0;
-      let thursday = 0;
-      let friday = 0;
-      let saturday = 0;
-      let sunday = 0;
+    $("#add-medication").on('click', async function () {
+
+      let monday = "No";
+      let tuesday = "No";
+      let wednesday = "No";
+      let thursday = "No";
+      let friday = "No";
+      let saturday = "No";
+      let sunday = "No";
+
+      let dates = [];
+
 
       if ($('#monday').is(':checked')) {
-        monday = 1;
+        dates.push(" Monday")
+        monday = "Yes";
       }
       if ($('#tuesday').is(':checked')) {
-        tuesday = 1;
+        dates.push(" Tuesday")
+        tuesday = "Yes";
       }
       if ($('#wednesday').is(':checked')) {
-        wednesday = 1;
+        dates.push(" Wednesday")
+        wednesday = "Yes";
       }
       if ($('#thursday').is(':checked')) {
-        thursday = 1;
+        dates.push(" Thursday")
+        thursday = "Yes";
       }
       if ($('#friday').is(':checked')) {
-        friday = 1;
+        dates.push(" Friday")
+        friday = "Yes";
       }
       if ($('#saturday').is(':checked')) {
-        saturday = 1;
+        dates.push(" Saturday")
+        saturday = "Yes";
       }
       if ($('#sunday').is(':checked')) {
-        sunday = 1;
+        dates.push(" Sunday")
+        sunday = "Yes";
       }
-
 
       medication = {
         name: $("#medication-name").val(),
@@ -59381,8 +59460,34 @@
         sunday,
         plan: $("#medication-plan").val(),
       }
+      
+      medicationArray.push(medication)
       console.log(medication);
+
+      conditionArray.push(report)
+      conditionCounter++;
+      console.log(conditionArray);
+
+      $('#medicationblock').append('<div class="input-group input-group-sm"><span class="input-group-addon"><b>Medication</b></span><input disabled value="'+medication.name+'" type="text" class="form-control"aria-describedby="sizing-addon1"><span class="input-group-addon"><b>Dose</b></span><input value="'+medication.dose+'" disabled type="text" class="form-control"aria-describedby="sizing-addon1"></div><br><div class="input-group input-group-sm"><span class="input-group-addon"><b>Days at week</b></span><input disabled value="'+dates.toString()+'" type="text" class="form-control"aria-describedby="sizing-addon1"></div><div class="form-group"><label for="exampleFormControlTextarea1" class="text-muted">Plan Care</label><textarea class="form-control" disabled rows="3">' +medication.plan+'</textarea></div><legend></legend>')
+    
+      $("#medication-name").val("")
+      $("#medication-dose").val("")
+      $('#monday').prop('checked', false);
+      $('#tuesday').prop('checked', false);
+      $('#wednesday').prop('checked', false);
+      $('#thursday').prop('checked', false);
+      $('#friday').prop('checked', false);
+      $('#saturday').prop('checked', false);
+      $('#sunday').prop('checked', false);
+      $("#medication-plan").val("")
+
+      toast("info", "New medication prescribed")
+
+    })
+
+    $("#save3").on('click', function () {
       toast('success', 'Patient medication saved')
+
 
     })
 
@@ -59408,12 +59513,13 @@
               var request = $.ajax({
                 url: "/new",
                 data: {
+                  // image: $("#userPic").attr("src"),
                   patient,
-                  report,
-                  allergy,
-                  immunisation,
+                  report: conditionArray,
+                  allergy: allergyArray,
+                  immunisation: immunisationArray,
                   social,
-                  medication
+                  medication: medicationArray
                 },
                 type: 'post',
                 headers: {
@@ -59423,7 +59529,8 @@
               })
         
               request.done(function (data) {
-                $('#loader1').attr("src","img/check.gif");
+                $('#loader1').toggle()
+                $('#valid1').toggle()
 
                 const ipfsHash = data.hash
 
@@ -59452,17 +59559,19 @@
                         if (txReceipt) {
                           clearInterval(interval);
 
-                          $('#loader2').attr("src","img/check.gif");
+                          $('#loader2').toggle();
+                          $('#valid2').toggle();
                           toast('success', "Patient Passport intergity secured in hash: " + transactionHash + ". <br><a href='https://rinkeby.etherscan.io/tx/" + transactionHash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>")
                           var request = $.ajax({
                             url: "/block-data",
                             data: {
+                              // image: $("#userPic").attr("src"),
                               patient,
-                              report,
-                              allergy,
-                              immunisation,
+                              report: conditionArray,
+                              allergy: allergyArray,
+                              immunisation: immunisationArray,
                               social,
-                              medication,
+                              medication: medicationArray,
                               blockHash: txReceipt.blockHash,
                               blockNumber: txReceipt.blockNumber,
                               txid: transactionHash,
@@ -59490,7 +59599,8 @@
                           request.done(function (result) {
                             setTimeout(function () {
                               toast('info', 'Downloading a Passport certification');
-                              $('#loader3').attr("src","img/check.gif");
+                              $('#loader3').toggle();
+                              $('#valid3').toggle();
                               setTimeout(() => {
                                 $('#loader').fadeToggle()
 
