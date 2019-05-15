@@ -10,6 +10,9 @@ module.exports = {
   | you want body parser to ignore JSON payload, then simply set `types`
   | to an empty array.
   */
+
+ urlencoded: {limit: '50mb', extended: true},
+
   json: {
     /*
     |--------------------------------------------------------------------------
@@ -20,7 +23,9 @@ module.exports = {
     | is over 1mb it will not be processed.
     |
     */
-    limit: '1mb',
+    limit: '50mb',
+
+    extended: true,
 
     /*
     |--------------------------------------------------------------------------
@@ -31,7 +36,7 @@ module.exports = {
     | Object. Otherwise everything parseable by `JSON.parse` is parsed.
     |
     */
-    strict: true,
+    strict: false,
 
     /*
     |--------------------------------------------------------------------------
@@ -60,6 +65,8 @@ module.exports = {
   |
   */
   raw: {
+    limit: '50mb',
+    extended: true,
     types: [
       'text/*'
     ]

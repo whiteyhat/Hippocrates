@@ -220,10 +220,11 @@ class UserController {
     try {
 
     if (auth.user.id) {
-        const {patient,report,allergy,immunisation,social,medication} = request.all()
-        // Logger.info(image)
+        const {patient,report,allergy,immunisation,social,medication, image} = request.all()
+        Logger.info(image)
   
         const data = {
+          image,
           patient,
           report,
           allergy,

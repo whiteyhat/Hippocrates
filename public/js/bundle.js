@@ -59333,15 +59333,16 @@
       var reader  = new FileReader();
     
       reader.onloadend = function () {
-        $("#userPic").attr("src", reader.result)
-        image = reader.result;
+        $("#userPic").attr("src", reader.result);
+        localStorage.setItem('image', reader.result)
       }
     
       if (file) {
         reader.readAsDataURL(file);
       } else {
-        $("#userPic").src("")
+        console.log("Error on image buffer");
       }
+
     })
 
     $("#save2").on('click', function () {
@@ -59498,8 +59499,8 @@
       var pass = $('#encryptPassword').val();
 
     if (check1 && check2 && check3 && pass != undefined) {
-      $('#loader').fadeToggle()
-      $('#createPass').fadeToggle()
+      // $('#loader').fadeToggle()
+      // $('#createPass').fadeToggle()
 
       
       const message = "As a "+ $('[name=doctorRole]').val()+" of the "+$('[name=doctorClinic]').val()+", I can confirm that the accuracy of this medical record is my responsibility and/or "+$('[name=doctorClinic]').val()+"'s responsabity. This medical record is confidential and belongs uniquely to " + patient.name + " or his/her or legal guardian. This data has been encrypted with a password provided by " +
@@ -59513,7 +59514,7 @@
               var request = $.ajax({
                 url: "/new",
                 data: {
-                  // image: $("#userPic").attr("src"),
+                  image: localStorage.getItem('image'),
                   patient,
                   report: conditionArray,
                   allergy: allergyArray,
@@ -59542,8 +59543,8 @@
         
                   if (error) {
                     toast('error', 'IPFS Passport failing while uploading to the Ethereum Public Ledger');
-                    $('#loader').fadeToggle()
-                    $('#createPass').fadeToggle()
+                    // $('#loader').fadeToggle()
+                    // $('#createPass').fadeToggle()
                   } else {
         
                     setTimeout(function () {
@@ -59565,7 +59566,7 @@
                           var request = $.ajax({
                             url: "/block-data",
                             data: {
-                              // image: $("#userPic").attr("src"),
+                              image: localStorage.getItem('image'),
                               patient,
                               report: conditionArray,
                               allergy: allergyArray,

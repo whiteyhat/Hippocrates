@@ -326,12 +326,12 @@ class PdfService {
 
       }
 
-      // Logger.info(data.patient.image)
-      // pdf
-      //   .image(new Buffer.from(data.patient.image), 250, 60, {
-      //     align: 'center',
-      //     scale: 0.25
-      //   })
+      Logger.info(data.patient.image)
+      pdf
+        .image(new Buffer.from(data.patient.image), 250, 60, {
+          align: 'center',
+          scale: 0.25
+        })
         patientTable.addBody([
           { 
           title: 'Name',
