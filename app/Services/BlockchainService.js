@@ -31,7 +31,10 @@ class BlockchainService {
 
             ipfs.add(content, (err, ipfsHash) => {
               Logger.info(ipfsHash)
-              resolve(ipfsHash[0].hash)
+              resolve({
+                hash: ipfsHash[0].hash,
+                path: filename
+              })
             }) //await ipfs.add 
         }
       }, 1000)

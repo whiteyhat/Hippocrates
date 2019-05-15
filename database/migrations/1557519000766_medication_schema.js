@@ -17,7 +17,7 @@ class MedicationSchema extends Schema {
       table.boolean('friday').notNullable().defaultTo(false)
       table.boolean('saturday').notNullable().defaultTo(false)
       table.boolean('sunday').notNullable().defaultTo(false)
-      table.string('description').notNullable()
+      table.text('description').notNullable()
 
       table.timestamps()
     })

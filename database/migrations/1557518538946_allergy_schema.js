@@ -10,7 +10,7 @@ class AllergySchema extends Schema {
       table.integer('patient_id').unsigned().references('id').inTable('patients').notNullable()
       table.string('allergy').notNullable()
       table.boolean('risk').notNullable()
-      table.string('notes')
+      table.text('notes')
       table.timestamps()
     })
   }

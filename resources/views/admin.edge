@@ -40,7 +40,7 @@
       <td>{{user.created_at}}</td>
       <td>{{user.role}}</td>
       <td>
-        <a href="#info" data-toggle="modal" class="settings"><i title="More information" data-placement="left"
+        <a href="#info{{user.id}}" data-toggle="modal" class="settings"><i title="More information" data-placement="left"
             data-toggle="tooltip" class="fas fa-info-circle"></i></a>
         <a href="#deleteUser{{user.id}}" data-toggle="modal" class="delete"><i title="Delete" data-placement="left"
             data-toggle="tooltip" class="fas fa-times-circle"></i>
@@ -55,12 +55,19 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
+            @if(user.name)
             <h4 class="modal-title">{{user.name}}</h4>
+            @else 
+
+            @endif
           </div>
           <div class="modal-body" style="margin-left:2%">
             <div class="row">
               <i title="Clinic" data-placement="left" data-toggle="tooltip"
+              @if(user.clinic)
                 class="fas fa-hospital"></i> {{user.clinic}}
+                @else 
+                @endif
             </div>
             <div class="row">
               <i title="Role" data-placement="left" data-toggle="tooltip"

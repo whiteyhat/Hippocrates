@@ -55330,6 +55330,49 @@ XMLHttpRequest.prototype.nodejsBaseUrl = null;
     var address = null;
     var coinbase = null;
 
+    $(document).ready(  function () {
+
+      if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+         web3.eth.getCoinbase( async (error, coinbase) => {
+          if (error) {
+            toast("warning", "Please, activate Metamask ")
+            return;
+          }
+          address = coinbase.toLowerCase();
+        
+        })
+      } else {
+        // set the provider you want from Web3.providers
+        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+      }
+  
+      window.ethereum.on('accountsChanged', function (accounts) {
+        logoutReload()
+      })
+      
+      window.ethereum.on('networkChanged', function (netId) {
+        logoutReload()
+      })
+})
+
+function logoutReload(){
+  var request = $.ajax({
+    url: "/logout",
+    data: {
+      address
+    },
+    type: 'post',
+    headers: {
+      'x-csrf-token': $('[name=_csrf]').val()
+    },
+    dataType: 'json'
+  })
+
+  request.done(function () {
+      window.location.replace('/')
+  })
+}
     $("#logout").on('click', async function () {
       var request = $.ajax({
         url: "/logout",
@@ -55353,21 +55396,6 @@ XMLHttpRequest.prototype.nodejsBaseUrl = null;
     })
 
 $("#login").on('click', async function () {
-    if (typeof web3 !== 'undefined') {
-      web3 = new Web3(web3.currentProvider);
-      coinbase = await web3.eth.getCoinbase();
-    } else {
-      // set the provider you want from Web3.providers
-      web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-    }
-
-    if (!coinbase) {
-      toast("error", "Please, activate Metamask ")
-      return;
-    }
-
-    address = coinbase.toLowerCase();
-
     var request = $.ajax({
       url: "/sign",
       data: {

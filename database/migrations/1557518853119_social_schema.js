@@ -13,8 +13,8 @@ class SocialSchema extends Schema {
       table.string('dressing').notNullable()
       table.string('washing').notNullable()
       table.string('toileting').notNullable()
-      table.string('functions')
-      table.string('behaviour')
+      table.text('functions')
+      table.text('behaviour')
       table.timestamps()
     })
   }

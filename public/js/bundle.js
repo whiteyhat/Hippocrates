@@ -59144,7 +59144,16 @@
   }],
   496: [function (require, module, exports) {
     var Web3 = require('web3');
-    var patient, report, allergy, immunisation, social, medication = null
+    var patient, report, allergy, immunisation, social, medication = null;
+    var conditionCounter = 0;
+    var allergyCounter = 0; 
+    var immunisationCounter = 0;
+    var medication = 0;
+    var conditionArray = [];
+    var allergyArray = [];
+    var immunisationArray = [];
+    var medicationArray = [];
+    var image = ""
     var contract = null;
     var accounts = null;
     var address = null;
@@ -59215,6 +59224,72 @@
     function prevTab(elem) {
       $(elem).prev().find('a[data-toggle="tab"]').click();
     }
+    $("#add-condition").on('click', async function () {
+
+      report = {
+          condition: $("#condition").val(),
+          year: $("#year").val(),
+          notes: $("#condition-notes").val()
+      }
+
+      conditionArray.push(report)
+      conditionCounter++;
+      console.log(conditionArray);
+
+      $('#conditionblock').append('<div class="input-group input-group-sm"><span class="input-group-addon"><b>Condition</b></span><input disabled value="'+report.condition+'" type="text" class="form-control"aria-describedby="sizing-addon1"><span class="input-group-addon" id="sizing-addon1"><b>Year</b></span><input value="'+report.year+'" disabled type="text" class="form-control"aria-describedby="sizing-addon1"></div><br><div class="form-group"><label for="exampleFormControlTextarea1" class="text-muted">Additional Notes</label><textarea class="form-control" disabled rows="3">' +report.notes+'</textarea></div><legend></legend>')
+    
+      $("#condition").val("")
+      $("#year").val("")
+      $("#condition-notes").val("")
+      toast("info", "New condition added")
+
+    })
+
+    $("#add-allergy").on('click', function () {
+      let risk = "No";
+      if ($('#risk').is(':checked')) {
+        risk = "Yes";
+      }
+
+      allergy = {
+          name: $("#allergy-name").val(),
+          risk: risk,
+          notes: $("#allergy-notes").val()
+      }
+
+      allergyArray.push(allergy)
+      allergyCounter++;
+      console.log(allergy);
+
+      if (risk) {
+        $('#allergyblock').append('<div class="input-group input-group-sm"><span class="input-group-addon" id="sizing-addon1"><b>Allergy</b></span><input disabled value="'+allergy.name+'" type="text" class="form-control"aria-describedby="sizing-addon1"><span class="input-group-addon" id="sizing-addon1"><b>High Risk</b></span><input value="Yes" disabled type="text" class="form-control"aria-describedby="sizing-addon1"></div><br><div class="form-group"><label for="exampleFormControlTextarea1" class="text-muted">Additional Notes</label><textarea class="form-control" disabled rows="3">' +allergy.notes+'</textarea></div><legend></legend>')
+      }else{
+        $('#allergyblock').append('<div class="input-group input-group-sm"><span class="input-group-addon" id="sizing-addon1"><b>Allergy</b></span><input disabled value="'+allergy.name+'" type="text" class="form-control"aria-describedby="sizing-addon1"><span class="input-group-addon" id="sizing-addon1"><b>High Risk</b></span><input value="No" disabled type="text" class="form-control"aria-describedby="sizing-addon1"></div><br><div class="form-group"><label for="exampleFormControlTextarea1" class="text-muted">Additional Notes</label><textarea class="form-control" disabled rows="3">' +allergy.notes+'</textarea></div><legend></legend>')
+      }
+      toast("info", "New allergy added")
+      $("#allergy-name").val("")
+      $("#allergy-notes").val("")
+      $('#risk').prop('checked', false);
+    })
+
+
+    $("#add-immunisation").on('click', function () {
+      
+      immunisation = {
+          name: $("#immunisation-name").val(),
+          year: $("#immunisation-date").val()
+      }
+      immunisationArray.push(immunisation)
+      immunisationCounter++;      
+      console.log(immunisationArray);
+      $('#immunisationblock').append('<div class="input-group input-group-sm"><span class="input-group-addon" id="sizing-addon1"><b>Allergy</b></span><input  disabled value="'+immunisation.name+'" type="text" class="form-control"aria-describedby="sizing-addon1"><span class="input-group-addon" id="sizing-addon1"><b>Date</b></span><input value="'+immunisation.year+'" disabled type="text" class="form-control"aria-describedby="sizing-addon1"></div><legend></legend>')
+      
+
+      $("#immunisation-name").val("")
+      $("#immunisation-date").val("")
+      toast("info", "New immunisation added")
+
+    })
     $("#save1").on('click', async function () {
 
       if (typeof web3 !== 'undefined') {
@@ -59233,12 +59308,15 @@
         return;
       }
 
+      address = coinbase.toLowerCase();
+
       let gender = null;
       if ($('#male').is(':checked')) {
         gender = "male";
       } else {
         gender = "female"
       }
+
       patient = {
         name: $("#name").val(),
         dob: $("#dob").val(),
@@ -59249,31 +59327,24 @@
 
     })
 
+    $("#changePicture").on('change', async function () {
+
+      var file    = document.querySelector('input[type=file]').files[0];
+      var reader  = new FileReader();
+    
+      reader.onloadend = function () {
+        $("#userPic").attr("src", reader.result)
+        image = reader.result;
+      }
+    
+      if (file) {
+        reader.readAsDataURL(file);
+      } else {
+        $("#userPic").src("")
+      }
+    })
+
     $("#save2").on('click', function () {
-      report = {
-        condition: $("#condition").val(),
-        year: $("#year").val(),
-        notes: $("#condition-notes").val()
-      }
-      console.log(report);
-
-      let risk = 0;
-      if ($('#risk').is(':checked')) {
-        risk = 1;
-      }
-
-      allergy = {
-        name: $("#allergy-name").val(),
-        risk: risk,
-        notes: $("#allergy-notes").val()
-      }
-      console.log(allergy);
-
-      immunisation = {
-        name: $("#immunisation-name").val(),
-        year: $("#immunisation-date").val()
-      }
-      console.log(immunisation);
 
       let mobility = null;
       if ($('#mobility-independent').is(':checked')) {
@@ -59335,37 +59406,47 @@
 
     })
 
-    $("#save3").on('click', function () {
-      let monday = 0;
-      let tuesday = 0;
-      let wednesday = 0;
-      let thursday = 0;
-      let friday = 0;
-      let saturday = 0;
-      let sunday = 0;
+    $("#add-medication").on('click', async function () {
+
+      let monday = "No";
+      let tuesday = "No";
+      let wednesday = "No";
+      let thursday = "No";
+      let friday = "No";
+      let saturday = "No";
+      let sunday = "No";
+
+      let dates = [];
+
 
       if ($('#monday').is(':checked')) {
-        monday = 1;
+        dates.push(" Monday")
+        monday = "Yes";
       }
       if ($('#tuesday').is(':checked')) {
-        tuesday = 1;
+        dates.push(" Tuesday")
+        tuesday = "Yes";
       }
       if ($('#wednesday').is(':checked')) {
-        wednesday = 1;
+        dates.push(" Wednesday")
+        wednesday = "Yes";
       }
       if ($('#thursday').is(':checked')) {
-        thursday = 1;
+        dates.push(" Thursday")
+        thursday = "Yes";
       }
       if ($('#friday').is(':checked')) {
-        friday = 1;
+        dates.push(" Friday")
+        friday = "Yes";
       }
       if ($('#saturday').is(':checked')) {
-        saturday = 1;
+        dates.push(" Saturday")
+        saturday = "Yes";
       }
       if ($('#sunday').is(':checked')) {
-        sunday = 1;
+        dates.push(" Sunday")
+        sunday = "Yes";
       }
-
 
       medication = {
         name: $("#medication-name").val(),
@@ -59379,104 +59460,223 @@
         sunday,
         plan: $("#medication-plan").val(),
       }
+      
+      medicationArray.push(medication)
       console.log(medication);
+
+      conditionArray.push(report)
+      conditionCounter++;
+      console.log(conditionArray);
+
+      $('#medicationblock').append('<div class="input-group input-group-sm"><span class="input-group-addon"><b>Medication</b></span><input disabled value="'+medication.name+'" type="text" class="form-control"aria-describedby="sizing-addon1"><span class="input-group-addon"><b>Dose</b></span><input value="'+medication.dose+'" disabled type="text" class="form-control"aria-describedby="sizing-addon1"></div><br><div class="input-group input-group-sm"><span class="input-group-addon"><b>Days at week</b></span><input disabled value="'+dates.toString()+'" type="text" class="form-control"aria-describedby="sizing-addon1"></div><div class="form-group"><label for="exampleFormControlTextarea1" class="text-muted">Plan Care</label><textarea class="form-control" disabled rows="3">' +medication.plan+'</textarea></div><legend></legend>')
+    
+      $("#medication-name").val("")
+      $("#medication-dose").val("")
+      $('#monday').prop('checked', false);
+      $('#tuesday').prop('checked', false);
+      $('#wednesday').prop('checked', false);
+      $('#thursday').prop('checked', false);
+      $('#friday').prop('checked', false);
+      $('#saturday').prop('checked', false);
+      $('#sunday').prop('checked', false);
+      $("#medication-plan").val("")
+
+      toast("info", "New medication prescribed")
+
+    })
+
+    $("#save3").on('click', function () {
       toast('success', 'Patient medication saved')
+
 
     })
 
     $("#save4").on('click', function () {
-      toast('info', 'Encrypting and uploading patient passport to IPFS');
-      console.log("Receiving hash...")
+      var check1 = $('input[name="reg1"]:checked').length > 0;
+      var check2 = $('input[name="reg2"]:checked').length > 0;
+      var check3 = $('input[name="reg3"]:checked').length > 0;
+      var pass = $('#encryptPassword').val();
 
-      var request = $.ajax({
-        url: "/new",
-        data: {
-          patient,
-          report,
-          allergy,
-          immunisation,
-          social,
-          medication
-        },
-        type: 'post',
-        headers: {
-          'x-csrf-token': $('[name=_csrf]').val()
-        },
-        dataType: 'json'
-      })
+    if (check1 && check2 && check3 && pass != undefined) {
+      $('#loader').fadeToggle()
+      $('#createPass').fadeToggle()
 
-      request.done(function (data) {
+      
+      const message = "As a "+ $('[name=doctorRole]').val()+" of the "+$('[name=doctorClinic]').val()+", I can confirm that the accuracy of this medical record is my responsibility and/or "+$('[name=doctorClinic]').val()+"'s responsabity. This medical record is confidential and belongs uniquely to " + patient.name + " or his/her or legal guardian. This data has been encrypted with a password provided by " +
+      patient.name + " or his/her legal guardian. \n\n Me, "+$('[name=doctorName]').val()+ ", I agree with this terms and use my public keys from my Web3 provider to sign this legitimate document, today, " + formatDate(new Date) +"."
 
-        contract.methods.sendHash(data.hash).send({
-          from: accounts[0]
-        }, async (error, transactionHash) => {
+      web3.eth.personal.sign(message,address,'', async (error, signature) => {
 
-          if (error) {
-            toast('error', 'IPFS Passport failing while uploading to the Ethereum Public Ledger');
-          } else {
+          if (signature) {
+                          
+              toast('info', 'Encrypting and uploading patient passport to IPFS');        
+              var request = $.ajax({
+                url: "/new",
+                data: {
+                  // image: $("#userPic").attr("src"),
+                  patient,
+                  report: conditionArray,
+                  allergy: allergyArray,
+                  immunisation: immunisationArray,
+                  social,
+                  medication: medicationArray
+                },
+                type: 'post',
+                headers: {
+                  'x-csrf-token': $('[name=_csrf]').val()
+                },
+                dataType: 'json'
+              })
+        
+              request.done(function (data) {
+                $('#loader1').toggle()
+                $('#valid1').toggle()
 
-            toast('info', "Passport encrypted and uploaded to IPFS with the following hash: " + transactionHash + ". <br><a href='https://ipfs.io/ipfs/" + data.hash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>");
+                const ipfsHash = data.hash
 
-            setTimeout(function () {
-              toast('info', 'Uploading IPFS Passport to the Ethereum Public Ledger');
-            }, 2000);
+                toast('info', "Passport encrypted and uploaded to IPFS with the following hash: " + ipfsHash + ". <br><a href='https://ipfs.io/ipfs/" + ipfsHash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>");
 
-            setTimeout(function () {
-              toast('warning', 'Waiting for the transaction to be confirmed. Please, wait...');
-            }, 7000);
-            var interval = setInterval(async function () {
-              await web3.eth.getTransactionReceipt(transactionHash, (err, txReceipt) => {
-
-                if (txReceipt) {
-                  clearInterval(interval);
-
-                  toast('success', "Patient Passport intergity secured in hash: " + transactionHash + ". <br><a href='https://rinkeby.etherscan.io/tx/" + transactionHash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>")
-                  var request = $.ajax({
-                    url: "/block-data",
-                    data: {
-                      patient,
-                      report,
-                      allergy,
-                      immunisation,
-                      social,
-                      medication,
-                      blockHash: txReceipt.blockHash,
-                      blockNumber: txReceipt.blockNumber,
-                      txid: transactionHash,
-                      filehash: data.hash
-                    },
-                    type: 'post',
-                    headers: {
-                      'x-csrf-token': $('[name=_csrf]').val()
-                    },
-                    dataType: 'json'
-                  })
-
-                  request.done(function (data) {
+                contract.methods.sendHash(ipfsHash).send({
+                  from: accounts[0]
+                }, async (error, transactionHash) => {
+        
+                  if (error) {
+                    toast('error', 'IPFS Passport failing while uploading to the Ethereum Public Ledger');
+                    $('#loader').fadeToggle()
+                    $('#createPass').fadeToggle()
+                  } else {
+        
                     setTimeout(function () {
-                      toast('warning', 'Waiting to download a blockchain certification of the patient passport');
-                    }, 5000);
+                      toast('info', 'Uploading IPFS Passport to the Ethereum Public Ledger');
+                    }, 2000);
+        
                     setTimeout(function () {
-                      window.location.replace("/temp/" + data.path)
-                    }, 8000);
-                  });
-                  request.fail(function (jqXHR, textStatus) {
-                    console.log(textStatus, jqXHR);
-                  });
+                      toast('warning', 'Waiting for the transaction to be confirmed. Please, wait...');
+                    }, 7000);
+                    var interval = setInterval(async function () {
+                      await web3.eth.getTransactionReceipt(transactionHash, (err, txReceipt) => {
+        
+                        if (txReceipt) {
+                          clearInterval(interval);
 
-                }
-              }); //await for getTransactionReceipt
-            }, 4000);
+                          $('#loader2').toggle();
+                          $('#valid2').toggle();
+                          toast('success', "Patient Passport intergity secured in hash: " + transactionHash + ". <br><a href='https://rinkeby.etherscan.io/tx/" + transactionHash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>")
+                          var request = $.ajax({
+                            url: "/block-data",
+                            data: {
+                              // image: $("#userPic").attr("src"),
+                              patient,
+                              report: conditionArray,
+                              allergy: allergyArray,
+                              immunisation: immunisationArray,
+                              social,
+                              medication: medicationArray,
+                              blockHash: txReceipt.blockHash,
+                              blockNumber: txReceipt.blockNumber,
+                              txid: transactionHash,
+                              filehash: data.hash,
+                              signature,
+                              message,
+                              address,
+                              password: $('[name=encryptPassword]').val(),
+                              doctor:{
+                                clinic: $('[name=doctorClinic]').val(),
+                                name: $('[name=doctorName]').val(),
+                                role: $('[name=doctorRole]').val(),
+                                phone: $('[name=doctorPhone]').val(),
+                                email: $('[name=doctorEmail]').val(),
+                                clinicAddress: $('[name=doctorClinicAddress]').val()
+                          }
+                            },
+                            type: 'post',
+                            headers: {
+                              'x-csrf-token': $('[name=_csrf]').val()
+                            },
+                            dataType: 'json'
+                          })
+        
+                          request.done(function (result) {
+                            setTimeout(function () {
+                              toast('info', 'Downloading a Passport certification');
+                              $('#loader3').toggle();
+                              $('#valid3').toggle();
+                              setTimeout(() => {
+                                $('#loader').fadeToggle()
+
+                              $('#passportView').fadeToggle()
+                              $('#passportQR').attr("src","https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://ipfs.io/ipfs/"+result.finalHash);
+                              $('#viewQR').attr("href","temp/"+result.path);
+
+                              $('#downloadQrCode').on('click', function(){
+                                var a = $("<a>")
+                                .attr("href", "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://ipfs.io/ipfs/"+result.finalHash)
+                                .attr("download", "img.png")
+                                .appendTo("body");
+
+                            a[0].click();
+                            a.remove();
+                              })
+                              
+                              $('#linkQR').attr("href","https://ipfs.io/ipfs/"+result.finalHash);
+                            }, 400);
+                            }, 1000);
+                          });
+                          request.fail(function (jqXHR, textStatus) {
+                            console.log(textStatus, jqXHR);
+                            $('#loader').fadeToggle()
+                            $('#createPass').fadeToggle()
+                          });
+        
+                        }
+                      }); //await for getTransactionReceipt
+                    }, 4000);
+                  }
+                });
+        
+              });
+              request.fail(function (jqXHR, textStatus) {
+                console.log(textStatus, jqXHR);
+                $('#loader').fadeToggle()
+                $('#createPass').fadeToggle()
+              });
+
+            request.fail(function (jqXHR, textStatus) {
+              console.log(textStatus, jqXHR);
+              $('#loader').fadeToggle()
+              $('#createPass').fadeToggle()
+            });
+          }else{
+              toast('error', 'Sorry, We could not get your signature')
+              $('#loader').fadeToggle()
+              $('#createPass').fadeToggle()
           }
-        });
-        console.log(data);
-
-      });
-      request.fail(function (jqXHR, textStatus) {
-        console.log(textStatus, jqXHR);
-      });
-
+        })
+    }else{
+      toast("error", "Confirm the required checkbox are marked and make sure the patient has typed a password")
+    }
+    
     })
+
+    function formatDate(date) {
+      var monthNames = [
+        "January", "February", "March",
+        "April", "May", "June", "July",
+        "August", "September", "October",
+        "November", "December"
+      ];
+  
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var seconds = date.getSeconds();
+  
+      var day = date.getDate();
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
+  
+      return day + ' of ' + monthNames[monthIndex] + ' of ' + year + ' at ' + hours + ':' + minutes + ':' + seconds;
+    }
+
   }, {
     "web3": 486
   }]

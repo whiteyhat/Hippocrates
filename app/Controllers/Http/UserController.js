@@ -9,9 +9,7 @@ const Patient = use('App/Models/Patient')
 const PdfService = use('App/Services/PdfService')
 const BlockchainService = use('App/Services/BlockchainService')
 const Logger = use('Logger')
-const fs = require("fs")
 const Database = use('Database')
-
 
 class UserController {
 
@@ -24,23 +22,39 @@ class UserController {
 
   async edit({auth, request, response}) {
     const {role, name, email, phone, clinic, address} = request.all()
-    console.log(role)
-    console.log(name)
     try {
       if (auth.user.wallet) {
         const user = await User.findBy('wallet', auth.user.wallet)
+        if (role != undefined) {
+          user.role = role
+        }
         user.role = role
-        user.name = name
-        user.address = address
-        user.email = email
-        user.phone = phone
-        user.clinic = clinic
+        if (name != undefined) {
+          user.name = name
+        }
+        if (address != undefined) {
+          user.address = address
+        }
+
+        if (email != undefined) {
+          user.email = email
+        }
+
+        if (phone != undefined) {
+          user.phone = phone
+        }
+
+        if (clinic != undefined) {
+          user.clinic = clinic
+        }
+     
         await user.save()
         response.send({msg: "Profile saved", type: "success"})
       } else {
         response.send({msg: "You do not have the permissions", type: "error"})
       }
     } catch (error) {
+      Logger.error(error)
     }
   }
 
@@ -89,7 +103,6 @@ class UserController {
 
           msg = "User deleted"
           type = "success"
-          Logger.info("user deletedx")
         }
       }
       response.send({type, msg})
@@ -178,23 +191,26 @@ class UserController {
 
   async fetchBlockchainData({request, response}){
     try {
-      const { txid,filehash,blockNumber,timestamp, patient,report,allergy,immunisation,social,medication} = request.all()
+      const { txid,filehash,blockNumber,timestamp, patient,report,allergy,immunisation,social,medication, address, signature, message, password, doctor} = request.all()
 
-      const data = {patient,report,allergy,immunisation,social,medication,blockchain : {filehash,blockNumber,timestamp,txid,filehash}}
+      const data = {patient, password, doctor, report,allergy,immunisation,social,medication,blockchain : {filehash,blockNumber,timestamp,txid,filehash, address, signature, message}}
 
       const path = await PdfService.generatePDF(data, Date.now().toString())
       Logger.info(path)
-      setTimeout(function(){
-        // Assuming that 'path/file.txt' is a regular file.
-        fs.unlink("public/temp/"+path, (err) => {
-          if (err) throw err;
-          Logger.warning(path + " was self-deleted")
-        });
-      }, 10000);
 
-      response.send({path})
+      await BlockchainService.uploadToIPFS("public/temp/"+path).then(function(result) {
+        Logger.info("FINAL IPFS HASH: " + result.hash)
+        response.send({
+          finalHash:result.hash,
+          path
+        })
+      }).catch(function(error) {
+        console.log("Failed!", error);
+      })
+
+      PdfService.autoDeletePdf(path)
+
       
-
     }catch(error){
       Logger.error(error)
     }
@@ -205,58 +221,7 @@ class UserController {
 
     if (auth.user.id) {
         const {patient,report,allergy,immunisation,social,medication} = request.all()
-  
-        const patien = await Patient.create({
-          doctor_id: await auth.user.id,
-          name: patient.name,
-          dob: patient.dob,
-          gender: patient.gender
-        })
-  
-        const repor = await Report.create({
-          patient_id: patien.id,
-          condition: report.condition,
-          year: report.year,
-          notes: report.notes
-        })
-  
-        const allerg = await Allergy.create({
-          patient_id: patien.id,
-          allergy: allergy.name,
-          risk: allergy.risk,
-          notes: allergy.notes
-        })
-  
-        const immunisatio = await Immunisation.create({
-          patient_id: patien.id,
-          name: immunisation.name,
-          date: immunisation.year,
-        })
-  
-        const socia = await Social.create({
-          patient_id: patien.id,
-          mobility: social.mobility,
-          eating: social.eating,
-          dressing: social.dressing,
-          toileting: social.toileting,
-          washing: social.washing,
-          functions: social.activity,
-          behaviour: social.behaviour
-        })
-  
-        const medicatio = await Medication.create({
-          patient_id: patien.id,
-          medication: medication.name,
-          dose: medication.dose,
-          monday: medication.monday,
-          tuesday: medication.tuesday,
-          wednesday: medication.wednesday,
-          thursday: medication.thursday,
-          friday: medication.friday,
-          saturday: medication.saturday,
-          sunday: medication.sunday,
-          description: medication.plan
-        })
+        // Logger.info(image)
   
         const data = {
           patient,
@@ -270,13 +235,12 @@ class UserController {
         // response.send({data: "wtf?"})
         const file = await PdfService.generatePDF(data, Date.now().toString())
         
-        await BlockchainService.uploadToIPFS(file).then(function(nice) {
-          Logger.info("IPFS HASH: " + nice)
-          response.send({hash:nice})
+        await BlockchainService.uploadToIPFS(file).then(function(result) {
+          Logger.info("IPFS HASH: " + result.hash)
+          response.send({hash:result.hash})
         }).catch(function(error) {
           console.log("Failed!", error);
         })
-      
     }  else {
       Logger.info("Not an identified doctor")
       response.send({msg:"Not an identified doctor"})
