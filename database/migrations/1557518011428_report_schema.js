@@ -9,8 +9,8 @@ class ReportSchema extends Schema {
       table.increments()
       table.integer('patient_id').unsigned().references('id').inTable('patients').notNullable()
       table.string('condition')
-      table.integer('year')
-      table.string('notes')
+      table.string('year')
+      table.text('notes')
       table.timestamps()
     })
   }
