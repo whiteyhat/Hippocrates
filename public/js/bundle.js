@@ -59614,9 +59614,7 @@
 
                               $('#downloadQrCode').on('click', function(){
                                 var a = $("<a>")
-                                .attr("href", "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://ipfs.io/ipfs/"+result.finalHash)
-                                .attr("download", "img.png")
-                                .appendTo("body");
+                                .attr("href", "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://ipfs.io/ipfs/"+result.finalHash).attr("download", "img.png").appendTo("body");
 
                             a[0].click();
                             a.remove();
