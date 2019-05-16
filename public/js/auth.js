@@ -55336,10 +55336,15 @@ XMLHttpRequest.prototype.nodejsBaseUrl = null;
         web3 = new Web3(web3.currentProvider);
          web3.eth.getCoinbase( async (error, coinbase) => {
           if (error) {
-            toast("warning", "Please, activate Metamask ")
+            toast("warning", "A Web3 Provide is required, please download Metamask ")
             return;
           }
-          address = coinbase.toLowerCase();
+
+          try{
+            address = coinbase.toLowerCase();
+          }catch(error){
+            toast("warning", "Please, unlock metamask")
+          }
         
         })
       } else {
@@ -55410,10 +55415,12 @@ $("#login").on('click', async function () {
 
     request.done(function (data) {
       try {
-        if (data.msg) {
-          toast('error', data.msg)
-        }
-
+        if (data.msg == "Welcome to Hippocrates. New admin user created") {
+          toast(data.type, data.msg)
+          setTimeout(function(){
+            window.location.reload();
+          }, 1100);
+        }else {
         web3.eth.personal.sign(
           'I am signing my one-time nonce: ' + data.nonce,
           address,
@@ -55432,10 +55439,9 @@ $("#login").on('click', async function () {
               });
 
               request.done(function (data) {
-                      if (data.msg) {
-
-                toast('success', data.msg);
-                }
+                 if (data.msg) {
+                  toast('success', data.msg);
+                 }
               setTimeout(function(){
                 window.location.reload();
               }, 1000);
@@ -55448,6 +55454,7 @@ $("#login").on('click', async function () {
                 toast('error', 'Sorry, We could not get your signature')
             }
           })
+        }
       } catch (err) {
         console.log(err)
       }

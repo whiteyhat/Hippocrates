@@ -15,8 +15,16 @@ class PdfService {
       sudo.setPassword(Env.get('SUDO_PASSWORD'))
       const command = ['rm', '-rf', "public/temp/"+path];
       sudo.exec(command, function(err, pid, result) {
+        if (err) {
+          Logger.error(err)
+        }
+
+        if (result) {
+          Logger.info(result)
+        }
       });
-    }, 100000);
+      Logger.warning(path + " has been self-removed")
+    }, 60000);
   }
 
   generatePDF(data, name) {
@@ -520,7 +528,7 @@ class PdfService {
         },
         {
           title: 'Notes on functions and activies',
-          value: data.social.functions,
+          value: data.social.activity,
         },
         {
           title: 'Notes on behaviour',
@@ -529,46 +537,10 @@ class PdfService {
         ])
       }
 
-      // draw content, by passing data to the addBody method
-      table.addBody([{
-         
-          title: 'Mobility',
-          value: data.social.mobility,
-        },
-        {
-          title: 'Eating & Drinking',
-          value: data.social.eating,
-        },
-        {
-          title: 'Dressing',
-          value: data.social.dressing,
-        },
-        {
-          title: 'Toileting',
-          value: data.social.toileting,
-        },
-        {
-          title: 'Washing',
-          value: data.social.washing,
-        },
-        {
-          title: 'Notes on functions and activies',
-          value: data.social.activity,
-        },
-        {
-          title: 'Notes on behaviour',
-          value: data.social.behaviour,
-        }
-      ]);
-
       pdf.end()
       Logger.info('PDF GENERATED')
 
-      if (data.blockchain) {
-        return  name+".pdf"
-      }
-      
-      return  filename
+      return  name+".pdf"
     } catch (error) {
       Logger.error(error)
     }

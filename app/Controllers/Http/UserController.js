@@ -143,6 +143,7 @@ class UserController {
   async selfSovereignIdentity({auth, request,response}) {
     try {
       const {address} = request.all()
+      const nonce = Math.floor(Math.random() * 10000)
 
       if (!address){
       response.status(400)
@@ -151,17 +152,25 @@ class UserController {
 
       const user = await User.findBy('wallet', address)
       if (!user) {          
-
+        let msg = ""
+        let type = ""
        const query = await Database.select('*').from('users')
        if (!query[0]) {
-        const nonce = Math.floor(Math.random() * 10000)
         const user = await User.create({wallet: address, admin:1, nonce})
         await auth.remember(true).login(user)
+        msg = "Welcome to Hippocrates. New admin user created"
+        type = "info"
+
       }else{
-        response.send({ msg: 'Sorry, only registered users can access to Hippocrates'})
+        msg = "Sorry, only registered users can access to Hippocrates"
+        type = "error"
       }
+
+      response.send({type, msg, nonce })
       
       }else{
+        user.nonce = nonce
+        await user.save()
         response.send({nonce: user.nonce})
       }
     } catch (error) {
@@ -191,7 +200,7 @@ class UserController {
 
   async fetchBlockchainData({request, response}){
     try {
-      const { txid,filehash,blockNumber,timestamp, patient,report,allergy,immunisation,social,medication, address, signature, message, password, doctor} = request.all()
+      const { txid,filehash, patient,report,allergy,immunisation,social,medication, address, signature, message, password, doctor} = request.all()
       
       const image = request.file('image')
 
@@ -233,6 +242,8 @@ class UserController {
       const path = await PdfService.generatePDF(data, Date.now().toString())
       Logger.info(path)
 
+      PdfService.autoDeletePdf(path)
+
       await BlockchainService.uploadToIPFS("public/temp/"+path).then(function(result) {
         Logger.info("FINAL IPFS HASH: " + result.hash)
         response.send({
@@ -242,9 +253,6 @@ class UserController {
       }).catch(function(error) {
         console.log("Failed!", error);
       })
-
-      PdfService.autoDeletePdf(path)
-
       
     }catch(error){
       Logger.error(error)
@@ -255,7 +263,7 @@ class UserController {
     try {
 
     if (auth.user.id) {
-        const {patient,report,allergy,immunisation,social,medication} = request.all()
+        const {patient,report,allergy,immunisation,social,medication,password} = request.all()
         const image = request.file('image')
         
         
@@ -265,30 +273,8 @@ class UserController {
         const immunisationJson = JSON.parse(immunisation)
         const socialJson = JSON.parse(social)
         const medicationJson = JSON.parse(medication)
+        const passwordJson = JSON.parse(password)
 
-        
-        // Logger.info("PATIENT DATA")
-        // Logger.info(patient)
-
-        // Logger.info("REPORT DATA")
-        // Logger.info(report)
-
-        // Logger.info("SOCIAL DATA")
-        // Logger.info(socialJson)
-
-
-        // Logger.info("STRINIGIFY REPORT DATA")
-        // Logger.info(JSON.parse(report))
-
-
-        // Logger.info("STRINGIIFY PATIENT DATA")
-        // Logger.info(JSON.parse(patient))
-
-        // Logger.info("STRINIGIFY SOCIAL DATA")
-        // Logger.info(JSON.parse(social))
-
-        // const socialD = JSON.parse(social)
-        // Logger.info(socialD.mobility)
 
         const data = {
           image,
@@ -297,12 +283,16 @@ class UserController {
           allergy: allergyJson,
           immunisation: immunisationJson,
           social: socialJson,
+          password: passwordJson,
           medication : medicationJson
         }
   
-        const file = await PdfService.generatePDF(data, Date.now().toString())
+        const path = await PdfService.generatePDF(data, Date.now().toString())
+
+        PdfService.autoDeletePdf(path)
+
         
-        await BlockchainService.uploadToIPFS(file).then(function(result) {
+        await BlockchainService.uploadToIPFS("public/temp/"+path).then(function(result) {
           Logger.info("IPFS HASH: " + result.hash)
           response.send({hash:result.hash})
         }).catch(function(error) {

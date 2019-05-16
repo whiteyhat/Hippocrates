@@ -17,9 +17,9 @@
 const Route = use('Route')
 
 Route.on('/').render('welcome')
-Route.get('/admin', 'UserController.admin')
-Route.on('/profile').render('profile')
-Route.on('/new-passport').render('index')
+Route.get('/admin', 'UserController.admin').middleware(['isAdmin:auth'])
+Route.on('/profile').render('profile').middleware(['auth'])
+Route.on('/new-passport').render('index').middleware(['auth'])
 
 Route.post('/delete', 'UserController.deleteAccount')
 Route.post('/create-new', 'UserController.createUser')
