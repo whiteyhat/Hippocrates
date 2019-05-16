@@ -59513,6 +59513,8 @@
               formData.append('immunisation', JSON.stringify(immunisationArray))
               formData.append('medication', JSON.stringify(medicationArray))
               formData.append('social', JSON.stringify(social))
+              formData.append('password',  JSON.stringify($('[name=encryptPassword]').val()))
+
 
 
               var request = $.ajax({
