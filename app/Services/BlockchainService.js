@@ -28,14 +28,22 @@ class BlockchainService {
           Logger.info("Uploading file to IPFS")
           //save document to IPFS,return its hash
           //https://github.com/ipfs/interface-ipfs-core/blob/master/SPEC/FILES.md#add 
+          try {        
 
             ipfs.add(content, (err, ipfsHash) => {
-              Logger.info(ipfsHash)
-              resolve({
-                hash: ipfsHash[0].hash,
-                path: filename
-              })
-            }) //await ipfs.add 
+              if (ipfsHash) {
+                Logger.info(ipfsHash)
+                resolve({
+                  hash: ipfsHash[0].hash,
+                  path: filename
+                })
+                
+              }
+            })
+          } catch (error) {
+            Logger.error(error)
+          }
+             //await ipfs.add 
         }
       }, 1000)
     })
