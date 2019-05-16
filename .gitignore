@@ -16,3 +16,4 @@ database/development.sqlite
 .idea
 .DS_Store
 *.pdf
+.vscode/launch.json

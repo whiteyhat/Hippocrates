@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "adonis serve --dev",
+    "dev": "nodemon --inspect server.js",
     "test": "node ace test"
   },
   "keywords": [

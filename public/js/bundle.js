@@ -59318,6 +59318,8 @@
       }
 
       patient = {
+        dna: $("#DNA").val(),
+        blood: $("#blood").val(),
         name: $("#name").val(),
         dob: $("#dob").val(),
         gender: gender
@@ -59333,19 +59335,19 @@
       var reader  = new FileReader();
     
       reader.onloadend = function () {
-        $("#userPic").attr("src", reader.result)
-        image = reader.result;
+        $("#userPic").attr("src", reader.result);
+        $("#userPic").fadeToggle()
       }
     
       if (file) {
         reader.readAsDataURL(file);
       } else {
-        $("#userPic").src("")
+        console.log("Error on image buffer");
       }
+
     })
 
     $("#save2").on('click', function () {
-
       let mobility = null;
       if ($('#mobility-independent').is(':checked')) {
         mobility = "independent";
@@ -59464,10 +59466,6 @@
       medicationArray.push(medication)
       console.log(medication);
 
-      conditionArray.push(report)
-      conditionCounter++;
-      console.log(conditionArray);
-
       $('#medicationblock').append('<div class="input-group input-group-sm"><span class="input-group-addon"><b>Medication</b></span><input disabled value="'+medication.name+'" type="text" class="form-control"aria-describedby="sizing-addon1"><span class="input-group-addon"><b>Dose</b></span><input value="'+medication.dose+'" disabled type="text" class="form-control"aria-describedby="sizing-addon1"></div><br><div class="input-group input-group-sm"><span class="input-group-addon"><b>Days at week</b></span><input disabled value="'+dates.toString()+'" type="text" class="form-control"aria-describedby="sizing-addon1"></div><div class="form-group"><label for="exampleFormControlTextarea1" class="text-muted">Plan Care</label><textarea class="form-control" disabled rows="3">' +medication.plan+'</textarea></div><legend></legend>')
     
       $("#medication-name").val("")
@@ -59487,8 +59485,6 @@
 
     $("#save3").on('click', function () {
       toast('success', 'Patient medication saved')
-
-
     })
 
     $("#save4").on('click', function () {
@@ -59508,24 +59504,26 @@
       web3.eth.personal.sign(message,address,'', async (error, signature) => {
 
           if (signature) {
-                          
-              toast('info', 'Encrypting and uploading patient passport to IPFS');        
+              toast('info', 'Encrypting and uploading patient passport to IPFS');     
+              const formData = new FormData();
+              formData.append('image', document.querySelector('input[type=file]').files[0])
+              formData.append('patient', JSON.stringify(patient))
+              formData.append('report', JSON.stringify(conditionArray))
+              formData.append('allergy', JSON.stringify(allergyArray))
+              formData.append('immunisation', JSON.stringify(immunisationArray))
+              formData.append('medication', JSON.stringify(medicationArray))
+              formData.append('social', JSON.stringify(social))
+
+
               var request = $.ajax({
                 url: "/new",
-                data: {
-                  // image: $("#userPic").attr("src"),
-                  patient,
-                  report: conditionArray,
-                  allergy: allergyArray,
-                  immunisation: immunisationArray,
-                  social,
-                  medication: medicationArray
-                },
+                data: formData,
                 type: 'post',
+                contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+                processData: false, // NEEDED, DON'T OMIT THIS
                 headers: {
                   'x-csrf-token': $('[name=_csrf]').val()
                 },
-                dataType: 'json'
               })
         
               request.done(function (data) {
@@ -59562,38 +59560,42 @@
                           $('#loader2').toggle();
                           $('#valid2').toggle();
                           toast('success', "Patient Passport intergity secured in hash: " + transactionHash + ". <br><a href='https://rinkeby.etherscan.io/tx/" + transactionHash + "' target='_blank''><button type='button'class='btn btn-default'>Open</button></a>")
+                          
+                          const doctor = {
+                            clinic: $('[name=doctorClinic]').val(),
+                            name: $('[name=doctorName]').val(),
+                            role: $('[name=doctorRole]').val(),
+                            phone: $('[name=doctorPhone]').val(),
+                            email: $('[name=doctorEmail]').val(),
+                            clinicAddress: $('[name=doctorClinicAddress]').val()
+                          }
+                          const formDatad = new FormData();
+                          formDatad.append('image', document.querySelector('input[type=file]').files[0])
+                          formDatad.append('patient', JSON.stringify(patient))
+                          formDatad.append('report', JSON.stringify(conditionArray))
+                          formDatad.append('allergy', JSON.stringify(allergyArray))
+                          formDatad.append('immunisation', JSON.stringify(immunisationArray))
+                          formDatad.append('medication', JSON.stringify(medicationArray))
+                          formDatad.append('social', JSON.stringify(social))
+            
+
+                          formDatad.append('blockhash', JSON.stringify(txReceipt.blockHash))
+                          formDatad.append('txid', JSON.stringify(transactionHash))
+                          formDatad.append('filehash', JSON.stringify(data.hash))
+                          formDatad.append('signature', JSON.stringify(signature))
+                          formDatad.append('message',  JSON.stringify(message))
+                          formDatad.append('address',  JSON.stringify(address))
+                          formDatad.append('password',  JSON.stringify($('[name=encryptPassword]').val()))
+                          formDatad.append('doctor', JSON.stringify(doctor))
                           var request = $.ajax({
                             url: "/block-data",
-                            data: {
-                              // image: $("#userPic").attr("src"),
-                              patient,
-                              report: conditionArray,
-                              allergy: allergyArray,
-                              immunisation: immunisationArray,
-                              social,
-                              medication: medicationArray,
-                              blockHash: txReceipt.blockHash,
-                              blockNumber: txReceipt.blockNumber,
-                              txid: transactionHash,
-                              filehash: data.hash,
-                              signature,
-                              message,
-                              address,
-                              password: $('[name=encryptPassword]').val(),
-                              doctor:{
-                                clinic: $('[name=doctorClinic]').val(),
-                                name: $('[name=doctorName]').val(),
-                                role: $('[name=doctorRole]').val(),
-                                phone: $('[name=doctorPhone]').val(),
-                                email: $('[name=doctorEmail]').val(),
-                                clinicAddress: $('[name=doctorClinicAddress]').val()
-                          }
-                            },
+                            data: formDatad,
                             type: 'post',
+                            contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+                            processData: false, // NEEDED, DON'T OMIT THIS
                             headers: {
                               'x-csrf-token': $('[name=_csrf]').val()
-                            },
-                            dataType: 'json'
+                            }
                           })
         
                           request.done(function (result) {
@@ -59657,6 +59659,13 @@
     }
     
     })
+
+    function toObject(arr) {
+      var rv = {};
+      for (var i = 0; i < arr.length; ++i)
+        rv[i] = arr[i];
+      return rv;
+    }
 
     function formatDate(date) {
       var monthNames = [
