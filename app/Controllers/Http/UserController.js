@@ -192,8 +192,43 @@ class UserController {
   async fetchBlockchainData({request, response}){
     try {
       const { txid,filehash,blockNumber,timestamp, patient,report,allergy,immunisation,social,medication, address, signature, message, password, doctor} = request.all()
+      
+      const image = request.file('image')
 
-      const data = {patient, password, doctor, report,allergy,immunisation,social,medication,blockchain : {filehash,blockNumber,timestamp,txid,filehash, address, signature, message}}
+      const jsonPatient = JSON.parse(patient)
+      const reportJson = JSON.parse(report)
+      const allergyJson = JSON.parse(allergy)
+      const immunisationJson = JSON.parse(immunisation)
+      const socialJson = JSON.parse(social)
+      const medicationJson = JSON.parse(medication)
+
+
+      const txidJson = JSON.parse(txid)
+      const filehashJson = JSON.parse(filehash)
+      const addressJson = JSON.parse(address)
+      const signatureJson = JSON.parse(signature)
+      const messageJson = JSON.parse(message)
+      const passwordJson = JSON.parse(password)
+      const doctorJson = JSON.parse(doctor)
+     
+     
+      const data = {image, 
+        patient: jsonPatient, 
+        password :passwordJson,
+        doctor: doctorJson,
+        report: reportJson,
+        allergy: allergyJson,
+        immunisation: immunisationJson,
+        social: socialJson,
+        medication: medicationJson,
+        blockchain : {
+          filehash: filehashJson,
+          txid:txidJson,
+          filehash: filehashJson,
+           address: addressJson,
+           signature: signatureJson,
+           message: messageJson
+          }}
 
       const path = await PdfService.generatePDF(data, Date.now().toString())
       Logger.info(path)
@@ -220,20 +255,51 @@ class UserController {
     try {
 
     if (auth.user.id) {
-        const {patient,report,allergy,immunisation,social,medication, image} = request.all()
-        Logger.info(image)
-  
+        const {patient,report,allergy,immunisation,social,medication} = request.all()
+        const image = request.file('image')
+        
+        
+        const jsonPatient = JSON.parse(patient)
+        const reportJson = JSON.parse(report)
+        const allergyJson = JSON.parse(allergy)
+        const immunisationJson = JSON.parse(immunisation)
+        const socialJson = JSON.parse(social)
+        const medicationJson = JSON.parse(medication)
+
+        
+        // Logger.info("PATIENT DATA")
+        // Logger.info(patient)
+
+        // Logger.info("REPORT DATA")
+        // Logger.info(report)
+
+        // Logger.info("SOCIAL DATA")
+        // Logger.info(socialJson)
+
+
+        // Logger.info("STRINIGIFY REPORT DATA")
+        // Logger.info(JSON.parse(report))
+
+
+        // Logger.info("STRINGIIFY PATIENT DATA")
+        // Logger.info(JSON.parse(patient))
+
+        // Logger.info("STRINIGIFY SOCIAL DATA")
+        // Logger.info(JSON.parse(social))
+
+        // const socialD = JSON.parse(social)
+        // Logger.info(socialD.mobility)
+
         const data = {
           image,
-          patient,
-          report,
-          allergy,
-          immunisation,
-          social,
-          medication
+          patient: jsonPatient,
+          report: reportJson,
+          allergy: allergyJson,
+          immunisation: immunisationJson,
+          social: socialJson,
+          medication : medicationJson
         }
   
-        // response.send({data: "wtf?"})
         const file = await PdfService.generatePDF(data, Date.now().toString())
         
         await BlockchainService.uploadToIPFS(file).then(function(result) {
