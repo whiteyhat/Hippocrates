@@ -5,6 +5,7 @@ const PdfDocument = require('pdfkit')
 const PdfTable = require('voilab-pdf-table')
 const sudo = require('sudo-js');
 
+
 const Env = use('Env')
 class PdfService {
 
@@ -323,18 +324,41 @@ class PdfService {
         })
         .font('public/fonts/italic.ttf', 13)
         .moveDown()
+        .addPage()
+  
+        if (data.image) {
+        pdf.image(data.image.tmpPath, {
+          align: 'center',
+          width: 120,
+          height: 120
+        })
+        pdf.moveDown()
+        }
 
       }
 
-      Logger.info(data.patient.image)
-      pdf
-        .image(new Buffer.from(data.patient.image), 250, 60, {
+
+      if (data.image && !data.blockchain) {
+        pdf
+        .image(data.image.tmpPath, {
           align: 'center',
-          scale: 0.25
+          width: 120,
+          height: 120
         })
+        pdf.moveDown()
+      }
+
         patientTable.addBody([
           { 
-          title: 'Name',
+            title: 'DNA Sequence',
+            value: data.patient.dna,
+          },
+          { 
+            title: 'Blood Type',
+            value: data.patient.blood,
+          },
+          { 
+          title: 'Full Name',
           value: data.patient.name,
         },
         {
@@ -356,8 +380,8 @@ class PdfService {
         pdf.moveDown()
         conditionTable.addBody([
           {
-          title: 'Condition Name',
-          value: element.name
+          title: 'Condition Type',
+          value: element.condition
         },
         {
           title: 'Condition Year',
@@ -470,6 +494,41 @@ class PdfService {
       }
       pdf.moveDown()
 
+
+      if (data.social) {
+          pdf.moveDown()
+          table.addBody([{
+            
+          title: 'Mobility',
+          value: data.social.mobility,
+        },
+        {
+          title: 'Eating & Drinking',
+          value: data.social.eating,
+        },
+        {
+          title: 'Dressing',
+          value: data.social.dressing,
+        },
+        {
+          title: 'Toileting',
+          value: data.social.toileting,
+        },
+        {
+          title: 'Washing',
+          value: data.social.washing,
+        },
+        {
+          title: 'Notes on functions and activies',
+          value: data.social.functions,
+        },
+        {
+          title: 'Notes on behaviour',
+          value: data.social.behaviour,
+        }
+        ])
+      }
+
       // draw content, by passing data to the addBody method
       table.addBody([{
          
@@ -494,7 +553,7 @@ class PdfService {
         },
         {
           title: 'Notes on functions and activies',
-          value: data.social.functions,
+          value: data.social.activity,
         },
         {
           title: 'Notes on behaviour',
