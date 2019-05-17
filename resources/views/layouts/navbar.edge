@@ -26,6 +26,7 @@
               @endif
 
               @if(auth.user.wallet)
+              <li class="{{ request.match('/staff')  ? 'active':'' }}"><a href="/staff">Staff</a></li>
               <li class="{{ request.match('/new-passport')  ? 'active':'' }}"><a href="/new-passport">Create Passport</a></li>
               <!--li class="{{ request.match('/print')  ? 'active':'' }}"><a href="/print">Print Passport</a></li>
               <li class="{{ request.match('/verify')  ? 'active':'' }}"><a href="/verify">Verify Passport</a></li-->
