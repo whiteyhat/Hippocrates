@@ -5,7 +5,7 @@
   "description": "The fullstack application boilerplate for Adonisjs",
   "main": "index.js",
   "scripts": {
-    "start": "adonis serve --dev",
+    "start": "node server.js",
     "dev": "nodemon --inspect server.js",
     "test": "node ace test"
   },
@@ -30,7 +30,7 @@
     "Logger": "0.0.0",
     "eth-sig-util": "^2.1.2",
     "ethereumjs-util": "^6.1.0",
-    "ipfs-api": "^26.1.2",
+    "ipfs-http-client": "^31.1.0",
     "mysql": "^2.17.1",
     "pdfkit": "^0.9.1",
     "sudo-js": "^1.0.2",
