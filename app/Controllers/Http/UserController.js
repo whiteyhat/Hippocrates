@@ -58,6 +58,17 @@ class UserController {
     }
   }
 
+  async staff({auth, view, response}) {
+    try {
+      if (auth.user.wallet) {
+        const users = await Database.select('name', 'role', 'wallet').from('users')
+        return view.render('staff', {users})
+      } else {
+        response.send({msg: "You do not have the permission to view the admin panel"})
+      }
+    } catch (error) {
+    }
+  }
 
   async admin({auth, view, response}) {
     try {
