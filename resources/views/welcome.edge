@@ -1,71 +1,7 @@
 @layout('layouts.master')
 @section('content')
 @section('css')
-<style>
-.lib-panel {
-    margin-bottom: 20Px;
-}
-.lib-panel img {
-    width: 100%;
-    background-color: transparent;
-}
-
-.lib-panel .row,
-.lib-panel .col-md-6 {
-    padding: 0;
-    background-color: #FFFFFF;
-}
-
-p{
-  font-size: 18px;
-}
-li{
-  font-size: 18px; 
-}
-
-.lib-panel .lib-row {
-    padding: 0 20px 0 20px;
-}
-
-.lib-panel .lib-row.lib-header {
-    background-color: #FFFFFF;
-    font-size: 20px;
-    padding: 10px 20px 0 20px;
-}
-
-.lib-panel .lib-row.lib-header .lib-header-seperator {
-    height: 2px;
-    width: 26px;
-    background-color: #d9d9d9;
-    margin: 7px 0 7px 0;
-}
-
-.lib-panel .lib-row.lib-desc {
-    position: relative;
-    height: 100%;
-    display: block;
-    font-size: 13px;
-}
-.lib-panel .lib-row.lib-desc a{
-    position: absolute;
-    width: 100%;
-    bottom: 10px;
-    left: 20px;
-}
-
-.row-margin-bottom {
-    margin-bottom: 20px;
-}
-
-.box-shadow {
-    -webkit-box-shadow: 0 0 10px 0 rgba(0,0,0,.10);
-    box-shadow: 0 0 10px 0 rgba(0,0,0,.10);
-}
-
-.no-padding {
-    padding: 0;
-}
-</style>
+{{style('css/init')}}
 @endsection
 <script type="text/javascript">
   $(document).ready(function () {
@@ -136,8 +72,9 @@ li{
   </center>
 
 </div>
-<br><br><br>
-  <div id="why" class=" no-padding lib-item" data-category="view">
+<br>
+  <div id="why-content" class=" no-padding lib-item" data-category="view">
+      <br><br>
       <div class="lib-panel">
           <div class="row box-shadow">
               <div class="col-md-6">
@@ -174,8 +111,8 @@ li{
           </div>
       </div>
   </div>
-<br><br>
-  <div id="features" class="container">
+  <div id="features-content" class="container">
+      <br><br>
       <div class="row">
         <center>
             <h1 style="font-size:50px; color:black">Features</h1>
@@ -237,9 +174,8 @@ li{
     
       <br>
   </div>
-
-  <br><br>
-  <div id="features" class="container">
+  <div id="demo-content" class="container">
+      <br><br>
       <center>
       <div class="row">
             <h1 style="font-size:50px; color:black">Try a Demo</h1>
@@ -315,7 +251,7 @@ li{
             <center>
             <img style="width:65%" src="img/doctor.gif" alt="">
               <div class="input-group input-group-lg">
-                  <span class="input-group-addon" id="sizing-addon1">Wallet</span>
+                  <span class="input-group-addon" id="sizing-addon1">Metamask Wallet</span>
                   <input id="doctor-wallet" type="text" class="form-control" placeholder="Eg: 0x3n5J234bX5..."
                     aria-describedby="sizing-addon1">
                 </div>
@@ -331,7 +267,6 @@ li{
 
   <div id="start-admin-modal" class="modal fade" role="dialog">
       <div class="modal-dialog">
-
         <!-- Modal content-->
         <div class="modal-content">
           <div class="modal-header">
@@ -342,7 +277,7 @@ li{
             <center>
             <img style="width:65%" src="img/admin.gif" alt="">
               <div class="input-group input-group-lg">
-                  <span class="input-group-addon" id="sizing-addon1">Wallet</span>
+                  <span class="input-group-addon" id="sizing-addon1">Metamask Wallet</span>
                   <input id="admin-wallet" type="text" class="form-control" placeholder="Eg: 0x3n5J234bX5..."
                     aria-describedby="sizing-addon1">
                 </div>
@@ -352,7 +287,6 @@ li{
             <button id="start-admin" type="button" class="btn btn-success" data-dismiss="modal">START</button>
           </div>
         </div>
-
       </div>
   </div>
   
@@ -367,12 +301,6 @@ li{
           }, 1500);
         });
 
-        $('#why').click(function() {
-
-          $('html, body').animate({
-            scrollTop: $("#why").offset().top
-          }, 1500);
-        });
       });
 
       $("#start-admin").on("click", function(){
@@ -390,6 +318,7 @@ li{
       
             request.done(function (data) {
               toast(data.type, data.msg);
+              $("#login").fadeIn()
             });
             request.fail(function (jqXHR, textStatus) {
               console.log('error', textStatus, jqXHR);
@@ -411,23 +340,11 @@ li{
       
             request.done(function (data) {
               toast(data.type, data.msg);
+              $("#login").fadeIn()
             });
             request.fail(function (jqXHR, textStatus) {
               console.log('error', textStatus, jqXHR);
             });
       })
-
-
-      
-
-
 </script>
-
-<div class="progress">
-  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0"
-    aria-valuemax="100" style="width: 95%">
-    <p>Development Progress</p>
-    <span class="sr-only">95% Complete</span>
-  </div>
-</div>
 @endsection
