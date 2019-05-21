@@ -55343,7 +55343,7 @@ XMLHttpRequest.prototype.nodejsBaseUrl = null;
           try{
             address = coinbase.toLowerCase();
           }catch(error){
-            toast("warning", "Please, unlock metamask")
+            toast("warning", "Please, unlock metamask or turn off the privacy mode")
           }
         
         })
@@ -55401,6 +55401,16 @@ function logoutReload(){
     })
 
 $("#login").on('click', async function () {
+    loginFunction(address);
+  })
+
+
+$("#login-demo-btn").on('click', async function () {
+  loginFunction(address);
+})
+
+
+  function loginFunction(address) {
     var request = $.ajax({
       url: "/sign",
       data: {
@@ -55411,57 +55421,53 @@ $("#login").on('click', async function () {
         'x-csrf-token': $('[name=_csrf]').val()
       },
       dataType: 'json'
-    })
-
+    });
     request.done(function (data) {
       try {
         if (data.msg == "Welcome to Hippocrates. New admin user created") {
-          toast(data.type, data.msg)
-          setTimeout(function(){
+          toast(data.type, data.msg);
+          setTimeout(function () {
             window.location.reload();
           }, 1100);
-        }else {
-        web3.eth.personal.sign(
-          'I am signing my one-time nonce: ' + data.nonce,
-          address,
-          '' // MetaMask will ignore the password argument here
-          , async (error, signature) => {
-
-            if (signature) {
-              var request = $.ajax({
-                url: '/auth',
-                type: 'post',
-                data: {address,signature},
-                headers: {
-                  'x-csrf-token': $('[name=_csrf]').val()
-                },
-                dataType: 'json'
-              });
-
-              request.done(function (data) {
-                 if (data.msg) {
-                  toast('success', data.msg);
-                 }
-              setTimeout(function(){
-                window.location.reload();
-              }, 1000);
-              });
-
-              request.fail(function (jqXHR, textStatus) {
-                console.log(textStatus, jqXHR);
-              });
-            }else{
-                toast('error', 'Sorry, We could not get your signature')
-            }
-          })
         }
-      } catch (err) {
-        console.log(err)
+        else {
+          web3.eth.personal.sign('I am signing a secret-random number ('+  data.nonce +') to log in Hippocrates platform', address, '' // MetaMask will ignore the password argument here
+            , async (error, signature) => {
+              if (signature) {
+                var request = $.ajax({
+                  url: '/auth',
+                  type: 'post',
+                  data: { address, signature },
+                  headers: {
+                    'x-csrf-token': $('[name=_csrf]').val()
+                  },
+                  dataType: 'json'
+                });
+                request.done(function (data) {
+                  if (data.msg) {
+                    toast('success', data.msg);
+                  }
+                  setTimeout(function () {
+                    window.location.reload();
+                  }, 1000);
+                });
+                request.fail(function (jqXHR, textStatus) {
+                  console.log(textStatus, jqXHR);
+                });
+              }
+              else {
+                toast('error', 'Sorry, We could not get your signature');
+              }
+            });
+        }
       }
-    })
+      catch (err) {
+        console.log(err);
+      }
+    });
     request.fail(function (data, err) {
-      console.log(data, err)
-    })
-  })
+      console.log(data, err);
+    });
+  }
 
 },{"web3":486}]},{},[496]);
