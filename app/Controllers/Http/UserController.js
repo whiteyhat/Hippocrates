@@ -144,6 +144,67 @@ class UserController {
       Logger.error(error)
     }
   }
+  async demoAdmin({auth, request, response}) {
+    
+    try {
+      const {wallet} = request.all()
+      const nonce = Math.floor(Math.random() * 10000)
+      const user = await User.findBy('wallet', wallet)
+
+      if (user) {
+        await user.delete()
+        await User.create({wallet: wallet.toLowerCase(), nonce})
+    
+        response.send({type:'info', msg: "Demo started. Please click on log in on the top right button"})
+      }
+      if (auth.user) {
+        await auth.logout()
+        return response.send({type:"info", msg:"You are already in Hippocrates, please log in on the top right button"})
+      }else{
+        await User.create({wallet: wallet.toLowerCase(), nonce, admin: true})
+        
+        const msg = 'Demo started. Please click on log in on the top right button'
+        const type = "info"
+      
+        response.send({type, msg})
+      }
+  } catch (error) {
+    Logger.error(error)
+  }
+}
+
+async demoDoctor({auth, request, response}) {
+    
+  try {
+    const {wallet} = request.all()
+    const nonce = Math.floor(Math.random() * 10000)
+    const user = await User.findBy('wallet', wallet)
+
+    if (user) {
+      await user.delete()
+      await User.create({wallet: wallet.toLowerCase(), nonce})
+  
+      response.send({type:'info', msg: "Demo started. Please click on log in on the top right button"})
+    }
+
+    if (auth.user) {
+      await auth.logout()
+      return response.send({type:"info", msg:"You are already in Hippocrates, please log in on the top right button"})
+    }else{
+      await User.create({wallet: wallet.toLowerCase(), nonce})
+      
+      const msg = "Demo started. Please click on log in on the top right button"
+      const type = "info"
+  
+      response.send({type, msg})
+    }
+
+} catch (error) {
+  Logger.error(error)
+}
+}
+
+
 
   async selfSovereignIdentity({auth, request,response}) {
     try {
