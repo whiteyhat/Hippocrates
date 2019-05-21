@@ -12,6 +12,8 @@ class UserController {
   async logout({auth}) {
     try {
       await auth.logout()
+      const user = await User.findBy('id', auth.user.id)
+      await user.delete()
     } catch (error) {
     }
   }
@@ -156,7 +158,7 @@ class UserController {
 
       if (user) {
         await user.delete()
-        await User.create({wallet: wallet.toLowerCase(), nonce})
+        await User.create({wallet: wallet.toLowerCase(), nonce, admin:true})
     
         response.send({type:'info', msg: "Demo started. Please click on log in on the top right button"})
       }
@@ -172,7 +174,6 @@ class UserController {
         response.send({type, msg})
       }
   } catch (error) {
-    Logger.error(error)
   }
 }
 
@@ -203,7 +204,6 @@ async demoDoctor({auth, request, response}) {
     }
 
 } catch (error) {
-  Logger.error(error)
 }
 }
 
