@@ -32,4 +32,5 @@ Route.post('/auth', 'UserController.digitalSign')
 Route.post('/signup', 'UserController.signup')
 Route.post('/logout', 'UserController.logout')
 Route.post('/new', 'UserController.newPassport')
-
+Route.post('/doctor-demo', 'UserController.demoDoctor')
+Route.post('/admin-demo', 'UserController.demoAdmin')
