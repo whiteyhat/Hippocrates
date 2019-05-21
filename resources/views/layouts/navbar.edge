@@ -1,40 +1,50 @@
 <style>
-#login:hover, #logout:hover { 
-  background-color:black;
-}
-
-</style>
-<nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-              aria-expanded="false" aria-controls="navbar">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">HIPPOCRATES</a>
-          </div>
-          <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-              @if(!auth.user.wallet)
-              <li><a id="login" style="color:white" class="btn btn-primary">Log in</a></li>
-              @endif
-              @if(auth.user.admin)
-              <li class="{{ request.match('/admin')  ? 'active':'' }}"><a href="/admin">Admin</a></li>
-              @endif
-
-              @if(auth.user.wallet)
-              <li class="{{ request.match('/staff')  ? 'active':'' }}"><a href="/staff">Staff</a></li>
-              <li class="{{ request.match('/new-passport')  ? 'active':'' }}"><a href="/new-passport">Create Passport</a></li>
-              <!--li class="{{ request.match('/print')  ? 'active':'' }}"><a href="/print">Print Passport</a></li>
-              <li class="{{ request.match('/verify')  ? 'active':'' }}"><a href="/verify">Verify Passport</a></li-->
-                <li class="{{ request.match('/profile')  ? 'active':'' }}"><a  href="/profile">Profile</a></li>
-              <li><a id="logout" style="color:white" class="btn btn-danger">Log out</a> </li>
-              @endif
-      
-            </ul>
-          </div>
-        </div>
-      </nav>
+    #login:hover,
+    #logout:hover {
+      background-color: black;
+    }
+  
+  </style>
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+          aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">HIPPOCRATES</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        @if(!auth.user.wallet)
+        <ul class="nav navbar-nav">
+          <li id="how"><a href="#how">How</a></li>
+          <li id="why"><a href="#why">Why</a></li>
+          <li id="features"><a href="#features">Features</a></li>
+          <li id="demo"><a href="#demo">Demo</a></li>
+        </ul>
+        @endif
+        <ul class="nav navbar-nav navbar-right">
+          @if(!auth.user.wallet)
+          <li><a id="login" style="color:white" class="btn btn-primary">Log in</a></li>
+          @endif
+          @if(auth.user.admin)
+          <li class="{{ request.match('/admin')  ? 'active':'' }}"><a href="/admin">Admin</a></li>
+          @endif
+  
+          @if(auth.user.wallet)
+          <li class="{{ request.match('/staff')  ? 'active':'' }}"><a href="/staff">Staff</a></li>
+          <li class="{{ request.match('/new-passport')  ? 'active':'' }}"><a href="/new-passport">Create Passport</a></li>
+          <!--li class="{{ request.match('/print')  ? 'active':'' }}"><a href="/print">Print Passport</a></li>
+                    <li class="{{ request.match('/verify')  ? 'active':'' }}"><a href="/verify">Verify Passport</a></li-->
+          <li class="{{ request.match('/profile')  ? 'active':'' }}"><a href="/profile">Profile</a></li>
+          <li><a id="logout" style="color:white" class="btn btn-danger">Log out</a> </li>
+          @endif
+  
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
