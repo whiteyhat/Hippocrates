@@ -1,8 +1,10 @@
 'use strict'
 const User = use('App/Models/User')
+const edge = require('edge.js')
 const PdfService = use('App/Services/PdfService')
 const BlockchainService = use('App/Services/BlockchainService')
 const Logger = use('Logger')
+const Env = use('Env')
 const Database = use('Database')
 
 class UserController {
@@ -56,6 +58,7 @@ class UserController {
     try {
       if (auth.user.wallet) {
         const users = await Database.select('name', 'role', 'wallet').from('users')
+        edge.global('contract', Env.get('CONTRACT_ADDRESS'))
         return view.render('staff', {users})
       } else {
         response.send({msg: "You do not have the permission to view the admin panel"})
