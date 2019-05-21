@@ -31,9 +31,9 @@
           @endif
           @if(auth.user.admin)
           <li class="{{ request.match('/admin')  ? 'active':'' }}"><a href="/admin">Admin</a></li>
-          @endif
-  
-          @if(auth.user.wallet)
+          <li><a href="https://github.com/whiteyhat/Hippocrates/wiki/Passport-Validation-Guidelines">Validate Passport</a></li>
+
+          @elseif(auth.user.wallet)
           <li class="{{ request.match('/staff')  ? 'active':'' }}"><a href="/staff">Staff</a></li>
           <li class="{{ request.match('/new-passport')  ? 'active':'' }}"><a href="/new-passport">Create Passport</a></li>
           <li><a href="https://github.com/whiteyhat/Hippocrates/wiki/Passport-Validation-Guidelines">Validate Passport</a></li>
