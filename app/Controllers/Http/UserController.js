@@ -1,11 +1,5 @@
 'use strict'
 const User = use('App/Models/User')
-const Report = use('App/Models/Report')
-const Allergy = use('App/Models/Allergy')
-const Immunisation = use('App/Models/Immunisation')
-const Social = use('App/Models/Social')
-const Medication = use('App/Models/Medication')
-const Patient = use('App/Models/Patient')
 const PdfService = use('App/Services/PdfService')
 const BlockchainService = use('App/Services/BlockchainService')
 const Logger = use('Logger')
