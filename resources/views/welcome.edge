@@ -67,6 +67,12 @@ li{
 }
 </style>
 @endsection
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+
+</script>
 <div class="row jumbotron">
   <div class="col-md-6">
     <center>
@@ -85,44 +91,45 @@ li{
 
   </div>
 </div>
-<br><br><br>
 <div id="content" class="container">
+
+<br><br><br>
   <div class="row">
     <center>
         <h1 style="font-size:50px; color:black">How it works?</h1>
       <div class="col-sm-6 col-md-4">
         <div class="thumbnail">
-          <img src="/img/offline.svg" alt="...">
+          <img style="margin: 20%" src="/img/offline.svg" alt="...">
           <div class="caption">
             <p>‘Digitise’ Health-care facilities allowing
               notes to be recorded electronically - improving
               quality, and reducing reliance on paper notes.</p>
-            <h1>1</h1>
+            <h1 style="font-size:80px">1</h1>
           </div>
         </div>
       </div>
       <div class="col-sm-6 col-md-4">
         <div class="thumbnail">
-          <img src="/img/encryption.svg" alt="...">
+          <img style="margin: 20%"src="/img/encryption.svg" alt="...">
           <div class="caption">
             <p>Create medical records to 
               store sensitive data securely and create 
               and identity for patients based on the 
               Ethereum Public Ledger  
             </p>
-            <h1>2</h1>
+            <h1 style="font-size:80px">2</h1>
           </div>
         </div>
       </div>
       <div class="col-sm-6 col-md-4">
         <div class="thumbnail">
-          <img src="/img/phone.svg" alt="...">
+          <img style="margin: 20%" src="/img/phone.svg" alt="...">
           <div class="caption">
             <p>Give every patient their own encrypted health
                 ‘passport’ that they can access offline from
                 any health-care facility in the network.</p>
-            <h1>3</h1>
-          </div>
+                <h1 style="font-size:80px">3</h1>
+              </div>
         </div>
       </div>
   </div>
@@ -130,7 +137,7 @@ li{
 
 </div>
 <br><br><br>
-  <div class=" no-padding lib-item" data-category="view">
+  <div id="why" class=" no-padding lib-item" data-category="view">
       <div class="lib-panel">
           <div class="row box-shadow">
               <div class="col-md-6">
@@ -168,102 +175,190 @@ li{
       </div>
   </div>
 <br><br>
-  <div id="content" class="container">
+  <div id="features" class="container">
       <div class="row">
         <center>
             <h1 style="font-size:50px; color:black">Features</h1>
-          <div class="col-sm-6 col-md-4">
+          <div title="Hippocrates passport grants accurate, up-to-date, and complete information about patients or legal guardians at the point of care" data-placement="top" data-toggle="tooltip" class="col-sm-6 col-md-4">
             <div class="thumbnail">
-              <img src="/img/offline.svg" alt="...">
+              <br><img style="height:200px" src="/img/passport.svg" alt="...">
               <div class="caption">
-                <p>‘Digitise’ clinics allowing
-                  notes to be recorded
-                  electronically - improving
-                  quality, and reducing
-                  reliance on paper notes.</p>
-                <h1>1</h1>
+                  <h2>E-Medical Records</h2>
               </div>
             </div>
           </div>
-          <div class="col-sm-6 col-md-4">
+          <div title="Hippocrates passport produces a blockchain certification of the patient's data that can be proven using the Ethereum Public Ledger through the passport validation guidelines" data-placement="top" data-toggle="tooltip" class="col-sm-6 col-md-4">
             <div class="thumbnail">
-              <img src="/img/encryption.svg" alt="...">
+              <br><img style="height:200px" src="/img/data.svg" alt="...">
               <div class="caption">
-                <p>Give every patient their
-                  own encrypted health
-                  ‘passport’ that they can
-                  access offline from
-                  anywhere.</p>
-                <h1>2</h1>
+                  <h2>Blockchain certification</h2>
               </div>
             </div>
           </div>
-          <div class="col-sm-6 col-md-4">
+          <div title="Hippocrates passport provides an self-sovereign identity module based on the Hippocrates smart contract where patients or legal guardians can have access to a self-sovereign identity built on top of the Ethereum Public Ledger" data-placement="top" data-toggle="tooltip" class="col-sm-6 col-md-4">
             <div class="thumbnail">
-              <img src="/img/phone.svg" alt="...">
+              <br><img style="height:200px" style="height:20%" src="/img/id.svg" alt="...">
               <div class="caption">
-                <p>Provide high quality data
-                  analysis, including
-                  automated activity reports
-                  for donors. No need for
-                  manual transcription.</p>
-                <h1>3</h1>
+                  <h2>Self-Sovereign Identity</h2>
               </div>
             </div>
           </div>
       </div>
       <div class="row">
           <center>
-            <div class="col-sm-6 col-md-4">
+              <div title="Hippocrates passport contains a health-care program implemented by a physician or other qualified health care practitioner in the form of detailed instructions that govern the plan of care for an individual patient" data-placement="bottom" data-toggle="tooltip" class="col-sm-6 col-md-4">
+                  <div class="thumbnail">
+                    <br><img style="height:200px" src="/img/medicine.svg" alt="...">
+                    <div class="caption">
+                        <h2>Medical prescription</h2>
+                    </div>
+                  </div>
+                </div>
+            <div title="Hippocrates passport is designed by core to in environments with low internet access or technological infrastructure. Healthcare practitioners can print in a paper the QR code of the encrypted passport where can be accessible offline" data-placement="bottom" data-toggle="tooltip" class="col-sm-6 col-md-4">
               <div class="thumbnail">
-                <img src="/img/offline.svg" alt="...">
+                <br><img style="height:200px" src="/img/wallet.svg" alt="...">
                 <div class="caption">
-                  <p>‘Digitise’ clinics allowing
-                    notes to be recorded
-                    electronically - improving
-                    quality, and reducing
-                    reliance on paper notes.</p>
-                  <h1>1</h1>
+                    <h2>Offline access </h2>
                 </div>
               </div>
             </div>
-            <div class="col-sm-6 col-md-4">
+            <div title="Hippocrates passport is first encrypted and uploaded to IPFS. Then, from IPFS is encapsulated into a smart contract to remain immutable, safe and prove its authenticity using the passport validation guidelines" data-placement="bottom" data-toggle="tooltip" class="col-sm-6 col-md-4">
               <div class="thumbnail">
-                <img src="/img/encryption.svg" alt="...">
+                <br><img style="height:200px" src="/img/security.svg" alt="...">
                 <div class="caption">
-                  <p>Give every patient their
-                    own encrypted health
-                    ‘passport’ that they can
-                    access offline from
-                    anywhere.</p>
-                  <h1>2</h1>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-              <div class="thumbnail">
-                <img src="/img/phone.svg" alt="...">
-                <div class="caption">
-                  <p>Provide high quality data
-                    analysis, including
-                    automated activity reports
-                    for donors. No need for
-                    manual transcription.</p>
-                  <h1>3</h1>
+                  <h2>Immutable - Encrypted</h2>
                 </div>
               </div>
             </div>
         </div>
+
+        <p style="color:gray; font-size:18px"><i> Hippocrates solves frontline problems in healthcare using blockchain and distributed technology. Although this is a hackathon project for Boston BUIDL, the goal is to create a connected healthcare system able to survive in the most difficult environments to support the United Nation Sustatinable Development Goals #3 (Gooh health and well-being) & #10 (Reduced inequalities)</i></p>
       </center>
     
       <br>
-    </div>
+  </div>
 
+  <br><br>
+  <div id="features" class="container">
+      <center>
+      <div class="row">
+            <h1 style="font-size:50px; color:black">Try a Demo</h1>
+            <br>
+            <div class="row row-margin-bottom">
+                <div class="col-md-5 no-padding lib-item" data-category="view">
+                    <div class="lib-panel">
+                        <div class="row box-shadow">
+                            <div class="col-md-6">
+                                <img class="lib-img-show" src="img/doctor.svg">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="lib-row lib-header">
+                                    <h3>Doctor</h3>
+                                    <div class="lib-header-seperator"></div>
+                                    <ul>
+                                      <li style="font-size:13px">Generate Passports</li>
+                                      <li style="font-size:13px">Review validation guidelines</li>
+                                      <li style="font-size:13px">View other qualified staff</li>
+                                      <li style="font-size:13px">Update doctor profile</li>
+                                    </ul>
+                                </div>
+                                <div title="Start demo as a doctor user" data-placement="bottom" data-toggle="tooltip" class="lib-row lib-desc">
+                                    <div class="lib-header-seperator"></div>
+                                    <button data-toggle="modal" data-target="#start-doctor-modal" class="btn btn-primary" style="width:100%">START</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5 no-padding lib-item" data-category="ui">
+                    <div class="lib-panel">
+                        <div class="row box-shadow">
+                            <div class="col-md-6">
+                                <img class="lib-img" src="img/admin.svg">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="lib-row lib-header">
+                                    <h3>Admin</h3>
+                                    <div class="lib-header-seperator"></div>
+                                </div>
+                                <ul>
+                                    <li style="font-size:13px">Generate Passports</li>
+                                    <li style="font-size:13px">Review validation guidelines</li>
+                                    <li style="font-size:13px">View other qualified staff</li>
+                                    <li style="font-size:13px">Update doctor profile</li>
+                                    <li style="font-size:13px">Deploy Smart Contract</li>
+                                    <li style="font-size:13px">Add/Delete users</li>
+                                  </ul>
+                                <div title="Start demo as an admin user" data-placement="bottom" data-toggle="tooltip" class="lib-row lib-desc">
+                                  <div class="lib-header-seperator"></div>
+                                  <button data-toggle="modal" data-target="#start-admin-modal" class="btn btn-primary" style="width:100%">START</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </center>
+  </div>
+
+  <div id="start-doctor-modal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Start as a doctor</h4>
+          </div>
+          <div class="modal-body">
+            <center>
+            <img style="width:65%" src="img/doctor.gif" alt="">
+              <div class="input-group input-group-lg">
+                  <span class="input-group-addon" id="sizing-addon1">Wallet</span>
+                  <input id="doctor-wallet" type="text" class="form-control" placeholder="Eg: 0x3n5J234bX5..."
+                    aria-describedby="sizing-addon1">
+                </div>
+            </center>
+          </div>
+          <div class="modal-footer">
+            <button id="start-doctor" type="button" class="btn btn-success" data-dismiss="modal">START</button>
+          </div>
+        </div>
+
+      </div>
+  </div>
+
+  <div id="start-admin-modal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Start as a admin</h4>
+          </div>
+          <div class="modal-body">
+            <center>
+            <img style="width:65%" src="img/admin.gif" alt="">
+              <div class="input-group input-group-lg">
+                  <span class="input-group-addon" id="sizing-addon1">Wallet</span>
+                  <input id="admin-wallet" type="text" class="form-control" placeholder="Eg: 0x3n5J234bX5..."
+                    aria-describedby="sizing-addon1">
+                </div>
+            </center>
+          </div>
+          <div class="modal-footer">
+            <button id="start-admin" type="button" class="btn btn-success" data-dismiss="modal">START</button>
+          </div>
+        </div>
+
+      </div>
+  </div>
   
 
 <script>
   $(document).ready(function () {
-
         //Wizard
         $('#learnMore').click(function() {
 
@@ -271,16 +366,68 @@ li{
             scrollTop: $("#content").offset().top
           }, 1500);
         });
+
+        $('#why').click(function() {
+
+          $('html, body').animate({
+            scrollTop: $("#why").offset().top
+          }, 1500);
+        });
       });
+
+      $("#start-admin").on("click", function(){
+        var request = $.ajax({
+              url: "/admin-demo",
+              data: {
+                wallet: $("#admin-wallet").val()
+              },
+              type: 'post',
+              headers: {
+                'x-csrf-token': $('[name=_csrf]').val()
+              },
+              dataType: 'json'
+            })
+      
+            request.done(function (data) {
+              toast(data.type, data.msg);
+            });
+            request.fail(function (jqXHR, textStatus) {
+              console.log('error', textStatus, jqXHR);
+            });
+      })
+
+      $("#start-doctor").on("click", function(){
+        var request = $.ajax({
+              url: "/doctor-demo",
+              data: {
+                wallet: $("#doctor-wallet").val()
+              },
+              type: 'post',
+              headers: {
+                'x-csrf-token': $('[name=_csrf]').val()
+              },
+              dataType: 'json'
+            })
+      
+            request.done(function (data) {
+              toast(data.type, data.msg);
+            });
+            request.fail(function (jqXHR, textStatus) {
+              console.log('error', textStatus, jqXHR);
+            });
+      })
+
+
+      
 
 
 </script>
 
 <div class="progress">
   <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0"
-    aria-valuemax="100" style="width: 88%">
+    aria-valuemax="100" style="width: 95%">
     <p>Development Progress</p>
-    <span class="sr-only">88% Complete</span>
+    <span class="sr-only">95% Complete</span>
   </div>
 </div>
 @endsection
