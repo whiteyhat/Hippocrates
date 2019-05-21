@@ -31,13 +31,13 @@
           @endif
           @if(auth.user.admin)
           <li class="{{ request.match('/admin')  ? 'active':'' }}"><a href="/admin">Admin</a></li>
-          <li><a href="https://github.com/whiteyhat/Hippocrates/wiki/Passport-Validation-Guidelines">Validate Passport</a></li>
+          <li><a href="https://github.com/whiteyhat/Hippocrates/wiki/Passport-Validation-Guidelines"target="_blank">Validate Passport</a></li>
           <li><a id="logout" style="color:white" class="btn btn-danger">Log out</a> </li>
 
           @elseif(auth.user.wallet)
           <li class="{{ request.match('/staff')  ? 'active':'' }}"><a href="/staff">Staff</a></li>
           <li class="{{ request.match('/new-passport')  ? 'active':'' }}"><a href="/new-passport">Create Passport</a></li>
-          <li><a href="https://github.com/whiteyhat/Hippocrates/wiki/Passport-Validation-Guidelines">Validate Passport</a></li>
+          <li><a href="https://github.com/whiteyhat/Hippocrates/wiki/Passport-Validation-Guidelines"target="_blank">Validate Passport</a></li>
           <!--li class="{{ request.match('/print')  ? 'active':'' }}"><a href="/print">Print Passport</a></li>
                     <li class="{{ request.match('/verify')  ? 'active':'' }}"><a href="/verify">Verify Passport</a></li-->
           <li class="{{ request.match('/profile')  ? 'active':'' }}"><a href="/profile">Profile</a></li>
