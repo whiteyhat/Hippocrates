@@ -1,10 +1,18 @@
 var Web3 = require('web3');
   var patient, report, allergy, immunisation, social, medication = null
   let provider = null;
+  let address = null;
+  let abi = null;
+if (localStorage.getItem('smart_contract_address') != null) {
+    address = localStorage.getItem('smart_contract_address')
+} else {
+    address = '0xb84b12e953f5bcf01b05f926728e855f2d4a67a9'
+}
 
-  const address = '0xb84b12e953f5bcf01b05f926728e855f2d4a67a9'
-//use the ABI from your contract
-const abi = [{
+if (localStorage.getItem('abi') != null) {
+  abi = localStorage.getItem('abi')
+} else {
+  abi = [{
     "constant": true,
     "inputs": [],
     "name": "getHash",
@@ -29,6 +37,7 @@ const abi = [{
     "type": "function"
   }
 ]
+}
   $(document).ready(  function () {
 
     //Initialize tooltips
