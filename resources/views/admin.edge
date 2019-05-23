@@ -199,19 +199,19 @@
             <img style="width:65%" src="img/loading.gif" alt="">
               <div class="input-group input-group-lg">
                   <span class="input-group-addon" id="sizing-addon1">Smart Contract Address</span>
-                  <input id="admin-wallet" type="text" class="form-control" placeholder="Eg: 0x3n5J234bX5..."
+                  <input id="sc-address" type="text" class="form-control" placeholder="Eg: 0x3n5J234bX5..."
                     aria-describedby="sizing-addon1">
                 </div>
                 <br>
                 <div class="input-group input-group-lg">
                   <span class="input-group-addon" id="sizing-addon1">Smart Contract ABI</span>
-                  <input id="admin-wallet" type="text" class="form-control" placeholder='[ 	{ 		"constant": true, 		"inp...'
+                  <input id="sc-abi" type="text" class="form-control" placeholder='[ 	{ 		"constant": true, 		"inp...'
                     aria-describedby="sizing-addon1">
                 </div>
             </center>
           </div>
           <div class="modal-footer">
-            <button id="start-admin" type="button" class="btn btn-success" data-dismiss="modal">START</button>
+            <button id="deploy-sc" type="button" class="btn btn-success" data-dismiss="modal">Save</button>
           </div>
         </div>
       </div>
@@ -221,6 +221,10 @@
 
       $("#smartbtn").on("click", function(){
         $("#smart-contract").modal('show')
+      })
+      $("#deploy-sc").on("click", function(){
+        localStorage.setItem('abi', $("#sc-abi").val())
+        localStorage.setItem('smart_contract_address', $("#sc-address").val())
       })
       $("#addUserBtn").on("click", function(){
         var request = $.ajax({
