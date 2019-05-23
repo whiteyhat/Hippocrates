@@ -225,6 +225,7 @@
       $("#deploy-sc").on("click", function(){
         localStorage.setItem('abi', $("#sc-abi").val())
         localStorage.setItem('smart_contract_address', $("#sc-address").val())
+        toast('success', 'Smart Contract successfully integrated')
       })
       $("#addUserBtn").on("click", function(){
         var request = $.ajax({
